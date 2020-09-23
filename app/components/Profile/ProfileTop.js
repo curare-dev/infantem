@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Avatar } from "react-native-elements";
 
-const ProfileTop = () => {
+const ProfileTop = ({ user }) => {
   return (
     <View style={styles.profileTopContainer}>
       <Avatar
@@ -12,8 +12,10 @@ const ProfileTop = () => {
         containerStyle={styles.avatarStyle}
       ></Avatar>
       <View style={styles.nameAgeContainer}>
-        <Text style={[styles.title, styles.topText]}>Barbara Jardani</Text>
-        <Text style={[styles.subtitle, styles.topText]}>4 Meses</Text>
+        <Text style={[styles.title, styles.topText]}>{user.username}</Text>
+        <Text style={[styles.subtitle, styles.topText]}>
+          {user.age === undefined ? "Colocar Edad" : user.age}
+        </Text>
       </View>
     </View>
   );

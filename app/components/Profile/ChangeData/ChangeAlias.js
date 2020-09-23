@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Input, Button } from "react-native-elements";
+import { updateUserById } from "../../../services/profile/user.service";
 
-const ChangeAlias = () => {
+const ChangeAlias = ({ setIsVisible, setReloadInfo }) => {
+  const [formData, setFormData] = useState({});
+
+  const updateAlias = () => {
+    updateUserById(formData)
+      .then((response) => {
+        setReloadInfo(true);
+        setIsVisible(false);
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <View>
-      <Input label="Alias" placeholder="Introduzca el nuevo alias" />
-      <Input label="Contraseña" placeholder="Introduzca su contraseña" />
-      <Button title="Actualizar Alias" />
+      <Input
+        label="Alias"
+        placeholder="Introduzca el nuevo alias"
+        onChange={(e) => setFormData({ username: e.nativeEvent.text })}
+      />
+      <Button title="Actualizar Alias" onPress={updateAlias} />
     </View>
   );
 };

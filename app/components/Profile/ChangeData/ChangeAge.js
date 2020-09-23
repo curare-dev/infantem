@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Input, Button } from "react-native-elements";
+import { StyleSheet, View } from "react-native";
+import { Button, Input } from "react-native-elements";
 import { updateUserById } from "../../../services/profile/user.service";
 
-const ChangeName = ({ setIsVisible, setReloadInfo }) => {
+const ChangeAge = ({ setIsVisible, setReloadInfo }) => {
   const [formData, setFormData] = useState({});
 
-  const updateName = () => {
+  const updateAge = () => {
     updateUserById(formData)
       .then((response) => {
         setReloadInfo(true);
@@ -17,15 +17,15 @@ const ChangeName = ({ setIsVisible, setReloadInfo }) => {
   return (
     <View>
       <Input
-        label="Nombre"
-        placeholder="Introduzca el nombre"
-        onChange={(e) => setFormData({ name: e.nativeEvent.text })}
+        label="Edad"
+        placeholder="Introduzca la edad"
+        onChange={(e) => setFormData({ age: e.nativeEvent.text })}
       />
-      <Button title="Actualizar nombre" onPress={updateName} />
+      <Button title="Actualizar Edad" onPress={updateAge} />
     </View>
   );
 };
 
-export default ChangeName;
+export default ChangeAge;
 
 const styles = StyleSheet.create({});

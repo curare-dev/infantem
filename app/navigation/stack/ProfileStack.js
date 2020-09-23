@@ -5,12 +5,12 @@ import Profile from "../../screen/profile/Profile";
 
 const Stack = createStackNavigator();
 
-const ProfileStack = () => {
+const ProfileStack = ({ setLogin }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="profile"
-        component={Profile}
+        children={() => <Profile setLogin={setLogin} />}
         options={{
           headerTitle: () => <Text style={styles.headerTitle}></Text>,
           headerStyle: {

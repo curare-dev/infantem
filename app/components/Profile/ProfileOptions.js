@@ -8,30 +8,64 @@ import ChangeName from "./ChangeData/ChangeName";
 import ChangeLastName from "./ChangeData/ChangeLastName";
 import ChangePassword from "./ChangeData/ChangePassword";
 import ChangeAvatar from "./ChangeData/ChangeAvatar";
+import ChangeAge from "./ChangeData/ChangeAge";
 import ShareApp from "../../shared/ShareApp";
 import UpgradeApp from "../../shared/UpgradeApp";
 import LogOut from "../Session/LogOut";
 
-const ProfileOptions = () => {
+const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
   const [renderComponent, setRenderComponent] = useState(null);
   const getComponent = (component) => {
     switch (component) {
       case "alias":
-        setRenderComponent(<ChangeAlias />);
+        setRenderComponent(
+          <ChangeAlias
+            setIsVisible={setIsVisible}
+            setReloadInfo={setReloadInfo}
+          />
+        );
         break;
       case "name":
-        setRenderComponent(<ChangeName />);
+        setRenderComponent(
+          <ChangeName
+            setIsVisible={setIsVisible}
+            setReloadInfo={setReloadInfo}
+          />
+        );
         break;
       case "lastName":
-        setRenderComponent(<ChangeLastName />);
+        setRenderComponent(
+          <ChangeLastName
+            setIsVisible={setIsVisible}
+            setReloadInfo={setReloadInfo}
+          />
+        );
+        break;
+      case "age":
+        setRenderComponent(
+          <ChangeAge
+            setIsVisible={setIsVisible}
+            setReloadInfo={setReloadInfo}
+          />
+        );
         break;
       case "password":
-        setRenderComponent(<ChangePassword />);
+        setRenderComponent(
+          <ChangePassword
+            setIsVisible={setIsVisible}
+            setReloadInfo={setReloadInfo}
+          />
+        );
         break;
       case "avatar":
-        setRenderComponent(<ChangeAvatar />);
+        setRenderComponent(
+          <ChangeAvatar
+            setIsVisible={setIsVisible}
+            setReloadInfo={setReloadInfo}
+          />
+        );
         break;
       case "shareApp":
         setRenderComponent(<ShareApp />);
@@ -40,7 +74,7 @@ const ProfileOptions = () => {
         setRenderComponent(<UpgradeApp />);
         break;
       case "closeSession":
-        setRenderComponent(<LogOut />);
+        setRenderComponent(<LogOut setLogin={setLogin} />);
         break;
       default:
         break;
@@ -58,7 +92,9 @@ const ProfileOptions = () => {
           }}
         >
           <Text style={styles.title}>Cambiar Alias</Text>
-          <Text style={styles.subtitle}>Barbish</Text>
+          <Text style={styles.subtitle}>
+            {user.username === undefined ? "Colocar Alias" : user.username}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
@@ -68,7 +104,9 @@ const ProfileOptions = () => {
           }}
         >
           <Text style={styles.title}>Cambiar Nombre</Text>
-          <Text style={styles.subtitle}>Barbara Jardani</Text>
+          <Text style={styles.subtitle}>
+            {user.name === undefined ? "Colocar Nombre" : user.name}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
@@ -78,7 +116,21 @@ const ProfileOptions = () => {
           }}
         >
           <Text style={styles.title}>Cambiar Apellidos</Text>
-          <Text style={styles.subtitle}>Martínez Pérez</Text>
+          <Text style={styles.subtitle}>
+            {user.lastname === undefined ? "Colocar Apellidos" : user.lastname}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => {
+            getComponent("age");
+            toggleModal();
+          }}
+        >
+          <Text style={styles.title}>Cambiar Edad</Text>
+          <Text style={styles.subtitle}>
+            {user.age === undefined ? "Colocar Edad" : user.age}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
@@ -130,7 +182,13 @@ const ProfileOptions = () => {
           }}
         >
           <Text style={styles.title}>Versión: Gratuita</Text>
-          <Text style={[styles.upgradeText]}>Actualizar</Text>
+          <Text style={[styles.upgradeText]}>
+            {user.suscription === "free"
+              ? "Gratis"
+              : user.suscription === "intermediate"
+              ? "Intermedia"
+              : user.suscription === "premium" && "Premium"}
+          </Text>
         </TouchableOpacity>
       </View>
       <Button
