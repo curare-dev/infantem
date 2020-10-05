@@ -28,7 +28,7 @@ const PediatricianStack = () => {
         options={{
           headerTitle: () => <Text style={styles.headerTitle}>Pediatras</Text>,
           headerStyle: {
-            backgroundColor: getColor("backgroundColor"),
+            backgroundColor: getColor("headerBackgroundColor"),
             height: 130,
             elevation: 0,
             shadowColor: getColor("shadowColor"),
@@ -39,7 +39,11 @@ const PediatricianStack = () => {
               onPress={toggleVisible}
             >
               <Text style={styles.text}>Ver tus Citas</Text>
-              <Icon type="material-community" name="calendar" />
+              <Icon
+                type="material-community"
+                name="calendar"
+                color={getColor("headerText")}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -51,13 +55,19 @@ const PediatricianStack = () => {
 export default PediatricianStack;
 
 const styles = StyleSheet.create({
-  headerTitle: { fontSize: 25, paddingTop: 20, paddingLeft: 20 },
+  headerTitle: {
+    fontSize: 25,
+    paddingTop: 20,
+    paddingLeft: 20,
+    color: getColor("headerText"),
+  },
   iconCalendar: {
     flexDirection: "row",
     padding: 20,
     opacity: 0.6,
   },
   text: {
+    color: getColor("headerText"),
     textAlignVertical: "center",
   },
 });

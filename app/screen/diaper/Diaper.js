@@ -1,12 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import DiapersDiary from "../../components/Diapers/DiapersDiary";
-import DiapersWeekly from "../../components/Diapers/DiapersWeekly";
-import DiapersMonthly from "../../components/Diapers/DiapersMonthly";
-import Scroller from "../../shared/Scroller";
+import { StyleSheet } from "react-native";
+import Diapers from "../../components/Diapers/Diapers";
 
 const Diaper = () => {
-  return <DiapersDiary />;
+  return <Diapers />;
 };
 
 export default Diaper;

@@ -13,16 +13,12 @@ export const loginService = async (obj) => {
     });
     let status = await response.status;
     if (status === 200) {
-      try {
-        let json = await response.json();
-        await SecureStore.deleteItemAsync("token");
-        await SecureStore.deleteItemAsync("id");
-        await SecureStore.setItemAsync("token", JSON.stringify(json.token));
-        await SecureStore.setItemAsync("id", JSON.stringify(json.id));
-        return 0;
-      } catch (error) {
-        console.log(error);
-      }
+      let json = await response.json();
+      await SecureStore.deleteItemAsync("token");
+      await SecureStore.deleteItemAsync("id");
+      await SecureStore.setItemAsync("token", JSON.stringify(json.token));
+      await SecureStore.setItemAsync("id", JSON.stringify(json.id));
+      return 0;
     } else if (status === 401) {
       return 1;
     } else {

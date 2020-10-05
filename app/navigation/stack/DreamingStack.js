@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Dreaming from "../../screen/dreaming/Dreaming";
 import { Text, StyleSheet } from "react-native";
+import { getColor } from "../../utils/colors";
 
 const Stack = createStackNavigator();
 
@@ -12,9 +13,11 @@ function DreamingStack() {
         name="dreaming"
         component={Dreaming}
         options={{
-          headerTitle: () => <Text style={styles.headerTitle}>Dreaming</Text>,
+          headerTitle: () => (
+            <Text style={styles.headerTitle}>Horas de Sueño</Text>
+          ),
           headerStyle: {
-            backgroundColor: "#C5C2FF",
+            backgroundColor: getColor("headerBackgroundColor"),
             height: 130,
             elevation: 0,
             shadowColor: "transparent",
@@ -27,5 +30,10 @@ function DreamingStack() {
 export default DreamingStack;
 
 const styles = StyleSheet.create({
-  headerTitle: { fontSize: 25, paddingTop: 20, paddingLeft: 20 },
+  headerTitle: {
+    fontSize: 25,
+    paddingTop: 20,
+    paddingLeft: 20,
+    color: getColor("headerText"),
+  },
 });

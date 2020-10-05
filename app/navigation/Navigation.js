@@ -12,6 +12,7 @@ import DiaperStack from "./stack/DiaperStack";
 import Login from "../screen/auth/Login";
 import Signup from "../screen/auth/Signup";
 import { verifyTokenId } from "../utils/verifyTokenId";
+import { getColor } from "../utils/colors";
 
 const Tab = createBottomTabNavigator();
 
@@ -37,10 +38,10 @@ function Navigation() {
       <Tab.Navigator
         initialRouteName="feeding"
         tabBarOptions={{
-          inactiveTintColor: "rgba(60,72,88, 0.4)",
-          activeTintColor: "rgba(60,72,88, 0.7)",
-          inactiveBackgroundColor: "#C5C2FF",
-          activeBackgroundColor: "#ECEBFF",
+          inactiveTintColor: getColor("inactiveIcon"),
+          activeTintColor: getColor("activeIcon"),
+          inactiveBackgroundColor: getColor("inactiveBackgroundColor"),
+          activeBackgroundColor: getColor("activeBackgroundColor"),
         }}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => screenOptions(route, color),

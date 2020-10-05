@@ -1,30 +1,56 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Linking } from "react-native";
 import { getColor } from "../../utils/colors";
 import { Text, Button, Divider, Overlay } from "react-native-elements";
 import Appointment from "./Appointment";
+import MapView, { Marker } from "react-native-maps";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-const PediatricianPage = (props) => {
+const PediatricianPage = ({ pediatrician }) => {
+  let { uuid, name, ubicacion, coordinates } = pediatrician;
   const [visible, setVisible] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
   };
-  const {
-    pediatrician: { uuid, name, ubicacion },
-  } = props;
+
+  const redirectGoogleMaps = (name) => {
+    const URL = `https://www.google.com/maps/search/?api=1&query=${name}`;
+    const supported = Linking.canOpenURL(URL);
+    if (supported) {
+      Linking.openURL(URL);
+    } else {
+      console.log("No se pudo abrir el link");
+    }
+  };
+
   return (
     <View>
       <Text style={styles.title}>{name}</Text>
       <Divider style={styles.divider} />
       <Text style={styles.subtitle}>Ubicación: {ubicacion}</Text>
-      <Image
-        source={{
-          uri:
-            "https://de10.com.mx/sites/default/files/2020/02/14/google_maps_nuevas_funciones.jpg",
+      <MapView
+        customMapStyle={styles.customMapStyle}
+        initialRegion={{
+          latitude: coordinates.lat,
+          longitude: coordinates.lng,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001,
         }}
-        resizeMode="contain"
-        style={styles.image}
-      />
+        style={styles.mapStyle}
+        onPress={(e) => {
+          e.stopPropagation();
+          redirectGoogleMaps(name);
+        }}
+      >
+        <Marker
+          coordinate={{
+            latitude: coordinates.lat,
+            longitude: coordinates.lng,
+            title: "Foo Place",
+            subtitle: "1234 Foo Drive",
+          }}
+        ></Marker>
+      </MapView>
       <Button
         title="Pide una consulta Aquí"
         buttonStyle={styles.buttonStyle}
@@ -67,5 +93,11 @@ const styles = StyleSheet.create({
   },
   overlayContainer: {
     width: "75%",
+  },
+  mapStyle: {
+    alignSelf: "center",
+    width: 250,
+    height: 250,
+    margin: "5%",
   },
 });

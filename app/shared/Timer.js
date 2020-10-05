@@ -7,6 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Icon, Input } from "react-native-elements";
+import { getColor } from "../utils/colors";
 const screen = Dimensions.get("window");
 
 const formatNumber = (number) => `0${number}`.slice(-2);
@@ -22,30 +23,11 @@ const getRemaining = (time) => {
   };
 };
 
-const Timer = () => {
+const Timer = ({ setTime, resetTimer, setResetTimer }) => {
   const [remainingSecs, setRemainingSecs] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const { hrs, mins, secs } = getRemaining(remainingSecs);
   const [totalTime, setTotalTime] = useState(`00:00:00`);
-  const [currentDay, setCurrentDay] = useState(new Date().getDay());
-  const getCurrentDay = () => {
-    switch (currentDay) {
-      case 1:
-        return `Lunes`;
-      case 2:
-        return `Martes`;
-      case 3:
-        return `Miercoles`;
-      case 4:
-        return `Jueves`;
-      case 5:
-        return `Viernes`;
-      case 6:
-        return `Sabado`;
-      case 7:
-        return `Domingo`;
-    }
-  };
   const toggle = () => {
     setIsActive(!isActive);
   };
@@ -60,12 +42,16 @@ const Timer = () => {
       interval = setInterval(() => {
         setRemainingSecs((remainingSecs) => remainingSecs + 1);
       }, 1000);
+      setTime(remainingSecs);
     } else if (!isActive && remainingSecs !== 0) {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
   }, [isActive, remainingSecs]);
-
+  useEffect(() => {
+    setTotalTime(`00:00:00`);
+    setResetTimer(false);
+  }, [resetTimer === true]);
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -77,7 +63,7 @@ const Timer = () => {
             type="material-community"
             name="play"
             size={100}
-            opacity={0.6}
+            opacity={0.5}
           ></Icon>
         ) : (
           <Text style={styles.buttonText}>{`${hrs}:${mins}:${secs}`}</Text>
@@ -98,7 +84,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "10%",
   },
   resetButton: {
     alignItems: "center",
@@ -106,7 +91,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderWidth: 10,
-    borderColor: "#B9AAFF",
+    borderColor: getColor("headerBackgroundColor"),
     width: screen.width / 2,
     height: screen.width / 2,
     borderRadius: screen.width / 2,

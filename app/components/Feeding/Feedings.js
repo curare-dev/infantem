@@ -1,0 +1,241 @@
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Switch,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { Divider, Text } from "react-native-elements";
+import { getColor } from "../../utils/colors";
+import Modal from "../../shared/Modal";
+import FeedingDiaryManual from "./FeedingComponents/FeedingDiaryManual";
+import FeedingDiary from "./FeedingDiary";
+import FeedingMonthly from "./FeedingMonthly";
+import { ScrollView } from "react-native-gesture-handler";
+import FormulaFeeding from "./FeedingComponents/FormulaFeeding";
+import BreastFeeding from "./FeedingComponents/BreastFeeding";
+import { getTotalFeeding } from "../../services/feeding/feeding.service";
+
+const Feedings = () => {
+  const [reloadData, setReloadData] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const toggleModal = () => setIsVisible(true);
+  const [todayDataOz, setTodayDataOz] = useState(null);
+  const [todayDataMl, setTodayDataMl] = useState(null);
+  const [todayDataSecs, setTodayDataSecs] = useState(null);
+  const [monthlyDataOz, setMonthlyDataOz] = useState(null);
+  const [monthlyDataMl, setMonthlyDataMl] = useState(null);
+  const [monthlyDataSecs, setMonthlyDataSecs] = useState(null);
+  const [renderComponent, setRenderComponent] = useState(null);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  useEffect(() => {
+    async function getTotalData() {
+      getTotalFeeding("day")
+        .then((response) => {
+          console.log(response);
+          response.map((l, i) => {
+            if (l._id === "oz") {
+              setTodayDataOz(l.total);
+            }
+            if (l._id === "ml") {
+              setTodayDataMl(l.total);
+            }
+            if (l._id === "Secs") {
+              setTodayDataSecs(
+                parseFloat(Math.round((l.total / 60 / 60) * 100) / 100).toFixed(
+                  2
+                )
+              );
+            }
+          });
+        })
+        .catch((error) => console.log(error));
+      getTotalFeeding("month")
+        .then((response) => {
+          console.log(response);
+          response.map((l, i) => {
+            if (l._id === "oz") {
+              setMonthlyDataOz(l.total);
+            }
+            if (l._id === "ml") {
+              setMonthlyDataMl(l.total);
+            }
+            if (l._id === "Secs") {
+              setMonthlyDataSecs(
+                parseFloat(Math.round((l.total / 60 / 60) * 100) / 100).toFixed(
+                  2
+                )
+              );
+            }
+          });
+        })
+        .catch((error) => console.log(error));
+    }
+    getTotalData();
+  }, [reloadData]);
+
+  const getComponent = (component) => {
+    switch (component) {
+      case "day":
+        setRenderComponent(
+          <FeedingDiary
+            reloadData={reloadData}
+            setReloadData={setReloadData}
+            setIsVisible={setIsVisible}
+          />
+        );
+        break;
+      case "month":
+        setRenderComponent(
+          <FeedingMonthly
+            reloadData={reloadData}
+            setReloadData={setReloadData}
+            setIsVisible={setIsVisible}
+          />
+        );
+        break;
+    }
+  };
+
+  return (
+    <ScrollView contentContainerStyle={styles.containerFeedingDiary}>
+      <View style={styles.viewSwitch}>
+        <Text>Formula Feeding</Text>
+        <Switch
+          trackColor={{
+            false: "rgba(60,72,88, 0.4)",
+            true: "rgba(60,72,88, 0.7)",
+          }}
+          thumbColor={isEnabled ? "#9E99FF" : "#B9AAFF"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+        <Text>BreastFeeding</Text>
+      </View>
+      {!isEnabled ? (
+        <FormulaFeeding setReloadData={setReloadData} />
+      ) : (
+        <BreastFeeding setReloadData={setReloadData} />
+      )}
+      <View style={styles.touchableContainer}>
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => {
+            getComponent("day");
+            toggleModal();
+          }}
+        >
+          <Text style={[styles.subtitle, styles.headerDate]}>Hoy</Text>
+          <Divider style={styles.divider} />
+          <View style={styles.headerText}>
+            <Text>Formula</Text>
+            <Text>Lactancia Materna</Text>
+          </View>
+          <View style={styles.headerText}>
+            <Text style={styles.subtitle}>
+              {todayDataOz} Onzas y {todayDataMl} ml
+            </Text>
+            <Text style={styles.subtitle}>{todayDataSecs} hrs</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => {
+            getComponent("month");
+            toggleModal();
+          }}
+        >
+          <Text style={[styles.subtitle, styles.headerDate]}>
+            Historico del Mes
+          </Text>
+          <Divider style={styles.divider} />
+          <View style={styles.headerText}>
+            <Text>Formula</Text>
+            <Text>Lactancia Materna</Text>
+          </View>
+
+          <View style={styles.headerText}>
+            <Text style={styles.subtitle}>
+              {monthlyDataOz} Onzas y {monthlyDataMl} ml
+            </Text>
+            <Text style={styles.subtitle}>{monthlyDataSecs} hrs</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
+        {renderComponent}
+      </Modal>
+    </ScrollView>
+  );
+};
+
+export default Feedings;
+
+const styles = StyleSheet.create({
+  viewSwitch: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingLeft: 40,
+    paddingRight: 40,
+    marginTop: "3%",
+    marginBottom: 15,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    alignItems: "center",
+  },
+  textBottom: {
+    alignSelf: "center",
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 15,
+    opacity: 0.7,
+  },
+  buttonStyle: {
+    backgroundColor: getColor("buttonColor"),
+    width: "90%",
+  },
+  containerFeedingDiary: {
+    height: Dimensions.get("window").height - 100,
+    backgroundColor: getColor("backgroundColor"),
+    padding: "5%",
+  },
+  textBottom: {
+    alignSelf: "center",
+    fontSize: 15,
+    opacity: 0.4,
+  },
+  headerText: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  touchableStyle: {
+    flexDirection: "column",
+    marginTop: "5%",
+    backgroundColor: getColor("cardColor"),
+    padding: "3%",
+    borderRadius: 5,
+    width: "100%",
+  },
+  touchableContainer: {
+    alignItems: "center",
+  },
+  subtitle: {
+    textAlign: "center",
+    textAlignVertical: "center",
+  },
+  headerDate: {
+    fontWeight: "bold",
+    opacity: 0.7,
+    marginBottom: "2%",
+  },
+  divider: {
+    marginBottom: "2%",
+  },
+});

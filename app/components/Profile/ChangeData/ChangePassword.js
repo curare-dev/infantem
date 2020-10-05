@@ -1,24 +1,122 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Input, Button } from "react-native-elements";
+import { updatePassword } from "../../../services/profile/user.service";
+import { validateEmptyForm } from "../../../utils/validations";
 
-const ChangePassword = () => {
+const ChangePassword = ({ setIsVisible, setReloadInfo }) => {
+  const [formData, setFormData] = useState(defaultFormValue());
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
+  const changePassword = () => {
+    if (
+      validateEmptyForm(formData.password) ||
+      validateEmptyForm(formData.newPassword) ||
+      validateEmptyForm(formData.confirmNewPassword)
+    ) {
+      setFormData(defaultFormValue());
+      setError("Todos los campos son obligatorios");
+    } else if (setFormData.newPassword !== setFormData.confirmNewPassword) {
+      setFormData(defaultFormValue());
+      setError("Las contraseñas deben coincidir");
+    } else {
+      delete formData["confirmNewPassword"];
+      updatePassword(formData)
+        .then((response) => {
+          if (!response) {
+            setFormData(defaultFormValue());
+            setError("Contraseña incorrecta");
+          } else {
+            setReloadInfo(true);
+            setIsVisible(false);
+          }
+        })
+        .catch((error) => {
+          setFormData(defaultFormValue());
+          setError("Contraseña incorrecta");
+        });
+    }
+  };
   return (
     <View>
-      <Input label="Contraseña" placeholder="Introduzca su contraseña" />
+      <Input
+        label="Contraseña"
+        password={true}
+        secureTextEntry={showPassword ? false : true}
+        rightIconContainerStyle={styles.rightIcon}
+        rightIcon={{
+          type: "material-community",
+          name: showPassword ? "eye-off-outline" : "eye-outline",
+          opacity: 0.5,
+          onPress: () => setShowPassword(!showPassword),
+        }}
+        onChange={(e) =>
+          setFormData({ ...formData, password: e.nativeEvent.text })
+        }
+        value={formData.password}
+      />
       <Input
         label="Contraseña Nueva"
-        placeholder="Introduzca nueva contraseña"
+        password={true}
+        secureTextEntry={showNewPassword ? false : true}
+        rightIconContainerStyle={styles.rightIcon}
+        rightIcon={{
+          type: "material-community",
+          name: showNewPassword ? "eye-off-outline" : "eye-outline",
+          opacity: 0.5,
+          onPress: () => setShowNewPassword(!showNewPassword),
+        }}
+        onChange={(e) =>
+          setFormData({ ...formData, newPassword: e.nativeEvent.text })
+        }
+        value={formData.newPassword}
       />
       <Input
         label="Confirmar Contraseña"
-        placeholder="Introduzca nueva contraseña"
+        password={true}
+        secureTextEntry={showConfirmNewPassword ? false : true}
+        rightIconContainerStyle={styles.rightIcon}
+        rightIcon={{
+          type: "material-community",
+          name: showConfirmNewPassword ? "eye-off-outline" : "eye-outline",
+          opacity: 0.5,
+          onPress: () => setShowConfirmNewPassword(!showConfirmNewPassword),
+        }}
+        onChange={(e) =>
+          setFormData({ ...formData, confirmNewPassword: e.nativeEvent.text })
+        }
+        errorStyle={styles.errorStyle}
+        errorMessage={error}
+        value={formData.confirmNewPassword}
       />
-      <Button title="Actualizar Contraseña" />
+      <Button title="Actualizar Contraseña" onPress={changePassword} />
     </View>
   );
 };
 
+function defaultFormValue() {
+  return {
+    password: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  };
+}
+
 export default ChangePassword;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  errorStyle: {
+    marginTop: "5%",
+    marginBottom: "5%",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 15,
+    color: "red",
+  },
+  rightIcon: {
+    opacity: 0.3,
+  },
+});

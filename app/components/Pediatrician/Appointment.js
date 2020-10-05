@@ -6,14 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { getColor } from "../../utils/colors";
-import {
-  Input,
-  Button,
-  Divider,
-  Icon,
-  ListItem,
-  BottomSheet,
-} from "react-native-elements";
+import { Input, Button, ListItem, BottomSheet } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const Appointment = ({ setVisible }) => {
@@ -93,6 +86,7 @@ const Appointment = ({ setVisible }) => {
     }
   };
   const list = [
+    // meter esto a la base de datos
     {
       title: "Consulta de primera vez",
       subject: "Consulta de primera vez",

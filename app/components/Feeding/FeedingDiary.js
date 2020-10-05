@@ -1,117 +1,56 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Switch, TouchableOpacity } from "react-native";
-import Timer from "../../shared/Timer";
-import { Input, Button, Text } from "react-native-elements";
-import { getColor } from "../../utils/colors";
-import Modal from "../../shared/Modal";
-import FeedingDiaryManual from "./FeedingComponents/FeedingDiaryManual";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { getFeeding } from "../../services/feeding/feeding.service";
+import { ListItem, Avatar } from "react-native-elements";
 
-const FeedingDiary = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleModal = () => setIsVisible(true);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-  return (
-    <View style={styles.containerFeedingDiary}>
-      <View style={styles.viewSwitch}>
-        <Text style={styles.subText}>Formula Feeding</Text>
-        <Switch
-          trackColor={{
-            false: "rgba(60,72,88, 0.4)",
-            true: "rgba(60,72,88, 0.7)",
-          }}
-          thumbColor={isEnabled ? "#9E99FF" : "#B9AAFF"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-        <Text style={styles.subText}>BreastFeeding</Text>
-      </View>
-      {!isEnabled ? (
-        <View>
-          <Input
-            label="Cantidad"
-            keyboardType="numeric"
-            labelStyle={styles.text}
-          />
-          <Input label="Hora" labelStyle={styles.text} />
-          <Input
-            label="Fecha"
-            labelStyle={styles.text}
-            defaultValue="Hoy"
-            disabled={true}
-            style
-          />
-          <Text style={[styles.textBottom, styles.text]}>10 Oz</Text>
-          <Text style={[styles.textBottom, styles.subText]}>Sabado</Text>
-          <Button
-            title="Agregar"
-            containerStyle={styles.buttonContainer}
-            buttonStyle={styles.buttonStyle}
-          />
-        </View>
-      ) : (
-        <View>
-          <Timer />
-          <Text style={[styles.textBottom]}>Saturday</Text>
-          <TouchableOpacity onPress={toggleModal}>
-            <Text style={[styles.textRight]}>Manual</Text>
-          </TouchableOpacity>
-          <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
-            <FeedingDiaryManual setIsVisible={setIsVisible} />
-          </Modal>
-        </View>
-      )}
-    </View>
-  );
+const FeedingDiary = ({ reloadData, setReloadData }) => {
+  console.log(setReloadData);
+  const [showData, setShowData] = useState(null);
+  const [type, setType] = useState({ type: "day" });
+  useEffect(() => {
+    async function fetchFeedingByDay() {
+      setReloadData(false);
+      getFeeding(type)
+        .then((response) => {
+          if (response.length === 0) {
+            setError("No hay datos que mostrar");
+          } else {
+            setShowData(
+              response.map((l, i) => {
+                let date = new Date(l.date);
+                let year = date.getFullYear();
+                let month = date.getMonth() + 1;
+                month < 10 ? (month = `0${month}`) : month;
+                let day = date.getDate();
+                day < 10 ? (day = `0${day}`) : day;
+                return (
+                  <ListItem
+                    key={i}
+                    containerStyle={styles.listItemContainerStyle}
+                  >
+                    <ListItem.Content>
+                      <ListItem.Title>
+                        {l.quantity} {l.feedingType}
+                      </ListItem.Title>
+                      <ListItem.Subtitle>{`${day}/${month}/${year}`}</ListItem.Subtitle>
+                    </ListItem.Content>
+                  </ListItem>
+                );
+              })
+            );
+          }
+        })
+        .catch((error) => console.log("Error", error));
+    }
+    fetchFeedingByDay();
+  }, [reloadData]);
+  return <ScrollView>{showData}</ScrollView>;
 };
 
 export default FeedingDiary;
 
 const styles = StyleSheet.create({
-  viewSwitch: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingLeft: 40,
-    paddingRight: 40,
-    marginTop: "5%",
-    marginBottom: 15,
-  },
-  buttonContainer: {
-    marginTop: 10,
-    alignItems: "center",
-  },
-  textBottom: {
-    alignSelf: "center",
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 15,
-    opacity: 0.7,
-  },
-  subText: {
-    fontSize: 15,
-    opacity: 0.4,
-  },
-  buttonStyle: {
-    backgroundColor: getColor("buttonColor"),
-    width: "90%",
-  },
-  containerFeedingDiary: {
-    flex: 1,
-    backgroundColor: getColor("backgroundColor"),
-    padding: "5%",
-  },
-  textRight: {
-    alignSelf: "flex-end",
-    textDecorationLine: "underline",
-    fontSize: 15,
-    opacity: 0.5,
-  },
-  textBottom: {
-    alignSelf: "center",
-    fontSize: 15,
-    opacity: 0.4,
+  listItemContainerStyle: {
+    marginBottom: "1%",
   },
 });

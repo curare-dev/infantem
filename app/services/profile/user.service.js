@@ -17,7 +17,6 @@ export const getUserById = async () => {
 };
 
 export const updateUserById = async (obj) => {
-  console.log(obj);
   try {
     let userid = await SecureStore.getItemAsync("id");
     userid = userid.slice(1, -1);
@@ -37,6 +36,30 @@ export const updateUserById = async (obj) => {
     }
   } catch (error) {
     console.error("Error desde Servicio register", error);
+    return error;
+  }
+};
+
+export const updatePassword = async (obj) => {
+  try {
+    let userid = await SecureStore.getItemAsync("id");
+    userid = userid.slice(1, -1);
+    let response = await fetch(`${API}/user/resetPassword/${userid}`, {
+      method: "PUT",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    });
+    let status = await response.status;
+    if (status === 204) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error desde Servicio updatePassword", error);
     return error;
   }
 };

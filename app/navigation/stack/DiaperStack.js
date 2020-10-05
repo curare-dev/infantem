@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Icon, Text } from "react-native-elements";
 import { StyleSheet } from "react-native";
 import Diaper from "../../screen/diaper/Diaper";
+import { getColor } from "../../utils/colors";
 
 const Stack = createStackNavigator();
 const DiaperStack = () => {
@@ -14,7 +15,7 @@ const DiaperStack = () => {
         options={{
           headerTitle: () => <Text style={styles.headerTitle}>Pañales</Text>,
           headerStyle: {
-            backgroundColor: "#C5C2FF",
+            backgroundColor: getColor("headerBackgroundColor"),
             height: 130,
             elevation: 0,
             shadowColor: "transparent",
@@ -27,5 +28,10 @@ const DiaperStack = () => {
 export default DiaperStack;
 
 const styles = StyleSheet.create({
-  headerTitle: { fontSize: 25, paddingTop: 20, paddingLeft: 20 },
+  headerTitle: {
+    fontSize: 25,
+    paddingTop: 20,
+    paddingLeft: 20,
+    color: getColor("headerText"),
+  },
 });
