@@ -7,12 +7,12 @@ import { getColor } from "../../utils/colors";
 
 const Stack = createStackNavigator();
 
-const FeedingStack = () => {
+const FeedingStack = ({ user }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="feeding"
-        component={Feeding}
+        children={() => <Feeding user={user} />}
         options={{
           headerTitle: () => (
             <Text style={styles.headerTitle}>Alimentación</Text>

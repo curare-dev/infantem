@@ -4,7 +4,7 @@ import { Input, Button } from "react-native-elements";
 import { updatePassword } from "../../../services/profile/user.service";
 import { validateEmptyForm } from "../../../utils/validations";
 
-const ChangePassword = ({ setIsVisible, setReloadInfo }) => {
+const ChangePassword = ({ setIsVisible, setReloadProfileInfo }) => {
   const [formData, setFormData] = useState(defaultFormValue());
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +30,7 @@ const ChangePassword = ({ setIsVisible, setReloadInfo }) => {
             setFormData(defaultFormValue());
             setError("Contraseña incorrecta");
           } else {
-            setReloadInfo(true);
+            setReloadProfileInfo(true);
             setIsVisible(false);
           }
         })

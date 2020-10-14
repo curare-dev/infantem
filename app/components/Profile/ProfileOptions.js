@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { getColor } from "../../utils/colors";
-import { Button, Icon } from "react-native-elements";
+import { BottomSheet, Button, Icon, ListItem } from "react-native-elements";
 import Modal from "../../shared/Modal";
-import ChangeAlias from "./ChangeData/ChangeAlias";
 import ChangeName from "./ChangeData/ChangeName";
 import ChangeLastName from "./ChangeData/ChangeLastName";
 import ChangePassword from "./ChangeData/ChangePassword";
@@ -12,26 +11,31 @@ import ChangeAge from "./ChangeData/ChangeAge";
 import ShareApp from "../../shared/ShareApp";
 import UpgradeApp from "../../shared/UpgradeApp";
 import LogOut from "../Session/LogOut";
+import * as SecureStore from "expo-secure-store";
 
-const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
+const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
   const [renderComponent, setRenderComponent] = useState(null);
+  const [subject, setSubject] = useState("Seleccionar unidad de medida");
+  const [visible, setVisible] = useState(false);
+  const list = [
+    {
+      title: "Onzas",
+      subject: "oz",
+    },
+    {
+      title: "Mililitros",
+      subject: "ml",
+    },
+  ];
   const getComponent = (component) => {
     switch (component) {
-      case "alias":
-        setRenderComponent(
-          <ChangeAlias
-            setIsVisible={setIsVisible}
-            setReloadInfo={setReloadInfo}
-          />
-        );
-        break;
       case "name":
         setRenderComponent(
           <ChangeName
             setIsVisible={setIsVisible}
-            setReloadInfo={setReloadInfo}
+            setReloadProfileInfo={setReloadProfileInfo}
           />
         );
         break;
@@ -39,7 +43,7 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
         setRenderComponent(
           <ChangeLastName
             setIsVisible={setIsVisible}
-            setReloadInfo={setReloadInfo}
+            setReloadProfileInfo={setReloadProfileInfo}
           />
         );
         break;
@@ -47,7 +51,7 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
         setRenderComponent(
           <ChangeAge
             setIsVisible={setIsVisible}
-            setReloadInfo={setReloadInfo}
+            setReloadProfileInfo={setReloadProfileInfo}
           />
         );
         break;
@@ -55,7 +59,7 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
         setRenderComponent(
           <ChangePassword
             setIsVisible={setIsVisible}
-            setReloadInfo={setReloadInfo}
+            setReloadProfileInfo={setReloadProfileInfo}
           />
         );
         break;
@@ -63,7 +67,7 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
         setRenderComponent(
           <ChangeAvatar
             setIsVisible={setIsVisible}
-            setReloadInfo={setReloadInfo}
+            setReloadProfileInfo={setReloadProfileInfo}
           />
         );
         break;
@@ -84,18 +88,6 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
   return (
     <View>
       <View style={styles.optionsStyle}>
-        <TouchableOpacity
-          style={styles.touchableStyle}
-          onPress={() => {
-            getComponent("alias");
-            toggleModal();
-          }}
-        >
-          <Text style={styles.title}>Cambiar Alias</Text>
-          <Text style={styles.subtitle}>
-            {user.username === undefined ? "Colocar Alias" : user.username}
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
           onPress={() => {
@@ -162,6 +154,19 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
+          onPress={() => setVisible(true)}
+        >
+          <Text style={styles.title}>Cambiar Medida</Text>
+          <Text style={styles.subtitle}>
+            {user.feedingType === "oz"
+              ? "Onzas"
+              : user.feedingType === "ml"
+              ? "Mililitros"
+              : "No seleccionado"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.touchableStyle}
           onPress={() => {
             getComponent("shareApp");
             toggleModal();
@@ -203,6 +208,28 @@ const ProfileOptions = ({ setLogin, user, setReloadInfo }) => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
+      <BottomSheet isVisible={visible}>
+        {list.map((l, i) => {
+          return (
+            <ListItem
+              key={i}
+              containerStyle={l.containerStyle}
+              onPress={() => {
+                setSubject(l.title);
+                SecureStore.deleteItemAsync("mUnit");
+                SecureStore.setItemAsync("mUnit", l.subject);
+                setVisible(false);
+                setIsVisible(false);
+                setReloadProfileInfo(true);
+              }}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          );
+        })}
+      </BottomSheet>
     </View>
   );
 };

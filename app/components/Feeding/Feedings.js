@@ -9,7 +9,6 @@ import {
 import { Divider, Text } from "react-native-elements";
 import { getColor } from "../../utils/colors";
 import Modal from "../../shared/Modal";
-import FeedingDiaryManual from "./FeedingComponents/FeedingDiaryManual";
 import FeedingDiary from "./FeedingDiary";
 import FeedingMonthly from "./FeedingMonthly";
 import { ScrollView } from "react-native-gesture-handler";
@@ -17,7 +16,7 @@ import FormulaFeeding from "./FeedingComponents/FormulaFeeding";
 import BreastFeeding from "./FeedingComponents/BreastFeeding";
 import { getTotalFeeding } from "../../services/feeding/feeding.service";
 
-const Feedings = () => {
+const Feedings = ({ user }) => {
   const [reloadData, setReloadData] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
@@ -32,10 +31,10 @@ const Feedings = () => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   useEffect(() => {
+    setReloadData(false);
     async function getTotalData() {
       getTotalFeeding("day")
         .then((response) => {
-          console.log(response);
           response.map((l, i) => {
             if (l._id === "oz") {
               setTodayDataOz(l.total);
@@ -44,10 +43,14 @@ const Feedings = () => {
               setTodayDataMl(l.total);
             }
             if (l._id === "Secs") {
+              let d = Number(l.total);
+              const h = Math.floor(d / 3600);
+              const m = Math.floor((d % 3600) / 60);
+              const s = Math.floor((d % 3600) % 60);
               setTodayDataSecs(
-                parseFloat(Math.round((l.total / 60 / 60) * 100) / 100).toFixed(
-                  2
-                )
+                `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
+                  s < 10 ? "0" + s : s
+                }`
               );
             }
           });
@@ -55,7 +58,6 @@ const Feedings = () => {
         .catch((error) => console.log(error));
       getTotalFeeding("month")
         .then((response) => {
-          console.log(response);
           response.map((l, i) => {
             if (l._id === "oz") {
               setMonthlyDataOz(l.total);
@@ -64,10 +66,14 @@ const Feedings = () => {
               setMonthlyDataMl(l.total);
             }
             if (l._id === "Secs") {
+              let d = Number(l.total);
+              const h = Math.floor(d / 3600);
+              const m = Math.floor((d % 3600) / 60);
+              const s = Math.floor((d % 3600) % 60);
               setMonthlyDataSecs(
-                parseFloat(Math.round((l.total / 60 / 60) * 100) / 100).toFixed(
-                  2
-                )
+                `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
+                  s < 10 ? "0" + s : s
+                }`
               );
             }
           });
@@ -103,7 +109,7 @@ const Feedings = () => {
   return (
     <ScrollView contentContainerStyle={styles.containerFeedingDiary}>
       <View style={styles.viewSwitch}>
-        <Text>Formula Feeding</Text>
+        <Text>Fórmula Láctea</Text>
         <Switch
           trackColor={{
             false: "rgba(60,72,88, 0.4)",
@@ -114,10 +120,10 @@ const Feedings = () => {
           onValueChange={toggleSwitch}
           value={isEnabled}
         />
-        <Text>BreastFeeding</Text>
+        <Text>Lactancia Materna</Text>
       </View>
       {!isEnabled ? (
-        <FormulaFeeding setReloadData={setReloadData} />
+        <FormulaFeeding setReloadData={setReloadData} user={user} />
       ) : (
         <BreastFeeding setReloadData={setReloadData} />
       )}
@@ -132,39 +138,43 @@ const Feedings = () => {
           <Text style={[styles.subtitle, styles.headerDate]}>Hoy</Text>
           <Divider style={styles.divider} />
           <View style={styles.headerText}>
-            <Text>Formula</Text>
-            <Text>Lactancia Materna</Text>
+            {todayDataOz || todayDataMl ? <Text>Formula</Text> : null}
+            {todayDataOz && (
+              <Text style={styles.subtitle}>{todayDataOz + " Onzas"}</Text>
+            )}
+            {todayDataMl && (
+              <Text style={styles.subtitle}>{todayDataMl + " ml"}</Text>
+            )}
           </View>
           <View style={styles.headerText}>
-            <Text style={styles.subtitle}>
-              {todayDataOz} Onzas y {todayDataMl} ml
-            </Text>
-            <Text style={styles.subtitle}>{todayDataSecs} hrs</Text>
+            {todayDataSecs && <Text>Lactancia Materna</Text>}
+            {todayDataSecs && (
+              <Text style={styles.subtitle}>{todayDataSecs + " hrs"}</Text>
+            )}
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.touchableStyle}
-          onPress={() => {
-            getComponent("month");
-            toggleModal();
-          }}
-        >
+        <View style={styles.touchableStyle} onPress={() => {}}>
           <Text style={[styles.subtitle, styles.headerDate]}>
             Historico del Mes
           </Text>
           <Divider style={styles.divider} />
           <View style={styles.headerText}>
-            <Text>Formula</Text>
-            <Text>Lactancia Materna</Text>
-          </View>
+            {monthlyDataOz || monthlyDataMl ? <Text>Formula</Text> : null}
 
-          <View style={styles.headerText}>
-            <Text style={styles.subtitle}>
-              {monthlyDataOz} Onzas y {monthlyDataMl} ml
-            </Text>
-            <Text style={styles.subtitle}>{monthlyDataSecs} hrs</Text>
+            {monthlyDataOz && (
+              <Text style={styles.subtitle}>{monthlyDataOz + " Onzas"}</Text>
+            )}
+            {monthlyDataMl && (
+              <Text style={styles.subtitle}>{monthlyDataMl + " ml"}</Text>
+            )}
           </View>
-        </TouchableOpacity>
+          <View style={styles.headerText}>
+            {monthlyDataSecs && <Text>Lactancia Materna</Text>}
+            {monthlyDataSecs && (
+              <Text style={styles.subtitle}>{monthlyDataSecs + " hrs"}</Text>
+            )}
+          </View>
+        </View>
       </View>
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
@@ -187,9 +197,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     alignItems: "center",
-  },
-  textBottom: {
-    alignSelf: "center",
   },
   text: {
     fontSize: 20,

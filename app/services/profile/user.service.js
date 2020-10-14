@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 export const getUserById = async () => {
   try {
     let userid = await SecureStore.getItemAsync("id");
-    userid = userid.slice(1, -1);
+    userid ? (userid = userid.slice(1, -1)) : false;
     let response = await fetch(`${API}/user/${userid}`);
     let status = await response.status;
     if (status === 200 || status === 304) {

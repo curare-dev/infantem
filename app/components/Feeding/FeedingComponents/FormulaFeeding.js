@@ -1,18 +1,17 @@
-import React, { useState } from "react";
-import { Picker, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Button, Input } from "react-native-elements";
 import { getColor } from "../../../utils/colors";
 import { validateEmptyForm } from "../../../utils/validations";
 import { postfeeding } from "../../../services/feeding/feeding.service";
 
-const FormulaFeeding = ({ setReloadData }) => {
-  const [showHours, setShowHours] = useState(new Date().setHours(0, 0, 0, 0));
-  const [selectedValue, setSelectedValue] = useState("");
+const FormulaFeeding = ({ setReloadData, user }) => {
   const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState(defaultFormValue());
+  const [showHours, setShowHours] = useState(new Date().setHours(0, 0, 0, 0));
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
-
+  const showTimepicker = () => setShow(!show);
   const formatDateTime = (receivedDate) => {
     if (receivedDate === undefined || receivedDate === "00:00:00") {
       return `00:00:00`;
@@ -31,21 +30,19 @@ const FormulaFeeding = ({ setReloadData }) => {
     }
   };
 
-  const submitFeeding = () => {
+  const submitFeeding = async () => {
+    formData.feedingType = user.feedingType;
     if (
       validateEmptyForm(formData.date) ||
-      validateEmptyForm(formData.feedingType) ||
-      validateEmptyForm(formData.quantity)
+      validateEmptyForm(formData.quantity) ||
+      validateEmptyForm(formData.feedingType)
     ) {
       setError("Todos los campos son obligatorios");
     } else {
-      postfeeding(formData)
+      await postfeeding(formData)
         .then((response) => {
           if (response) {
-            setFormData({
-              quantity: 0,
-              feedingType: selectedValue,
-            });
+            setFormData({ quantity: "" });
             setError("");
             setReloadData(true);
           } else setError("Error en el sistema");
@@ -53,32 +50,31 @@ const FormulaFeeding = ({ setReloadData }) => {
         .catch(() => setError("Error en el sistema"));
     }
   };
-  const showTimepicker = () => setShow(!show);
+
   return (
-    <View styles={styles.container}>
-      <View style={styles.inputContainer}>
+    <View style={styles.formulaFeedingContainer}>
+      <View style={styles.quantityMeasureContainer}>
         <Input
-          containerStyle={styles.inputContainerStyle}
           label="Cantidad"
           placeholder="0"
           keyboardType="numeric"
           labelStyle={styles.text}
-          onChange={(e) =>
-            setFormData({ ...formData, quantity: e.nativeEvent.text })
-          }
+          onChange={(e) => {
+            setFormData({ ...formData, quantity: e.nativeEvent.text });
+          }}
           value={formData.quantity}
         />
-        <Picker
-          selectedValue={selectedValue}
-          style={{ height: 50, width: 150 }}
-          onValueChange={(itemValue, itemIndex) => {
-            setFormData({ ...formData, feedingType: itemValue });
-            setSelectedValue(itemValue);
-          }}
-        >
-          <Picker.Item label="oz" value="oz" />
-          <Picker.Item label="ml" value="ml" />
-        </Picker>
+        <Input
+          label="Medida"
+          value={
+            user.feedingType === "oz"
+              ? "Onzas"
+              : user.feedingType === "ml"
+              ? "Mililitros"
+              : "No Definido"
+          }
+          disabled
+        />
       </View>
       <TouchableOpacity onPress={showTimepicker}>
         <Input
@@ -119,32 +115,23 @@ const FormulaFeeding = ({ setReloadData }) => {
   );
 };
 
-function defaultFormValue() {
-  return {
-    quantity: "",
-    feedingType: "oz",
-  };
-}
-
 export default FormulaFeeding;
 
 const styles = StyleSheet.create({
-  container: {},
-  inputContainer: {
+  quantityMeasureContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    width: "50%",
+  },
+  formulaFeedingContainer: {
+    margin: "5%",
+  },
+  buttonContainer: {
+    alignSelf: "center",
+    width: "90%",
   },
   buttonStyle: {
     backgroundColor: getColor("buttonColor"),
-    width: "90%",
-  },
-  inputContainerStyle: {
-    width: "40%",
-    alignSelf: "center",
-  },
-  buttonContainer: {
-    marginTop: 10,
-    alignItems: "center",
   },
   errorStyle: {
     marginTop: "3%",

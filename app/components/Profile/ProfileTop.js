@@ -12,7 +12,7 @@ const ProfileTop = ({ user }) => {
         containerStyle={styles.avatarStyle}
       ></Avatar>
       <View style={styles.nameAgeContainer}>
-        <Text style={[styles.title, styles.topText]}>{user.username}</Text>
+        <Text style={[styles.title, styles.topText]}>{user.name}</Text>
         <Text style={[styles.subtitle, styles.topText]}>
           {user.age === undefined ? "Colocar Edad" : user.age}
         </Text>

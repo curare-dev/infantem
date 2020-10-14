@@ -2,6 +2,7 @@ import { API } from "../../utils/api";
 import * as SecureStore from "expo-secure-store";
 
 export const register = async (obj) => {
+  console.log(obj);
   try {
     let response = await fetch(`${API}/auth/signup`, {
       method: "POST",
@@ -18,6 +19,7 @@ export const register = async (obj) => {
       await SecureStore.deleteItemAsync("id");
       await SecureStore.setItemAsync("token", JSON.stringify(json.token));
       await SecureStore.setItemAsync("id", JSON.stringify(json.id));
+      await SecureStore.setItemAsync("mUnit", "oz");
       return true;
     } else {
       return false;

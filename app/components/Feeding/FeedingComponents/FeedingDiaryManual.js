@@ -7,7 +7,6 @@ import { validateEmptyForm } from "../../../utils/validations";
 import { postfeeding } from "../../../services/feeding/feeding.service";
 
 const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
-  console.log(setReloadData);
   const [showHours, setShowHours] = useState(new Date().setHours(0, 0, 0, 0));
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -57,7 +56,6 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
     } else {
       postfeeding(formData)
         .then((response) => {
-          console.log(response);
           if (response) {
             setFormData({
               date: "00:00:00",
@@ -69,7 +67,6 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
           } else setError("Error en el sistema");
         })
         .catch((error) => {
-          console.log(error);
           setError("Error en el sistema, Catch");
         });
     }

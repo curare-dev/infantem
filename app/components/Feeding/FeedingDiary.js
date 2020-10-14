@@ -4,16 +4,16 @@ import { getFeeding } from "../../services/feeding/feeding.service";
 import { ListItem, Avatar } from "react-native-elements";
 
 const FeedingDiary = ({ reloadData, setReloadData }) => {
-  console.log(setReloadData);
   const [showData, setShowData] = useState(null);
   const [type, setType] = useState({ type: "day" });
+  const [error, setError] = useState("");
   useEffect(() => {
     async function fetchFeedingByDay() {
       setReloadData(false);
       getFeeding(type)
         .then((response) => {
           if (response.length === 0) {
-            setError("No hay datos que mostrar");
+            setError("Sube los datos de tu bebe para que se muestren aquí!");
           } else {
             setShowData(
               response.map((l, i) => {
@@ -44,7 +44,11 @@ const FeedingDiary = ({ reloadData, setReloadData }) => {
     }
     fetchFeedingByDay();
   }, [reloadData]);
-  return <ScrollView>{showData}</ScrollView>;
+  return (
+    <ScrollView>
+      {showData ? showData : <Text style={styles.noDataText}>{error}</Text>}
+    </ScrollView>
+  );
 };
 
 export default FeedingDiary;
@@ -52,5 +56,8 @@ export default FeedingDiary;
 const styles = StyleSheet.create({
   listItemContainerStyle: {
     marginBottom: "1%",
+  },
+  noDataText: {
+    textAlign: "center",
   },
 });

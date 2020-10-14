@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import Feedings from "../../components/Feeding/Feedings";
-const Feeding = () => {
-  return <Feedings />;
+
+const Feeding = ({ user }) => {
+  return <Feedings user={user} />;
 };
 
 export default Feeding;

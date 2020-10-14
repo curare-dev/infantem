@@ -3,13 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { updateUserById } from "../../../services/profile/user.service";
 
-const ChangeName = ({ setIsVisible, setReloadInfo }) => {
+const ChangeName = ({ setIsVisible, setReloadProfileInfo }) => {
   const [formData, setFormData] = useState({});
 
   const updateName = () => {
     updateUserById(formData)
       .then((response) => {
-        setReloadInfo(true);
+        setReloadProfileInfo(true);
         setIsVisible(false);
       })
       .catch((error) => console.error(error));

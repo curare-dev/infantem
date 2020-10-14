@@ -13,7 +13,7 @@ const Signup = ({ setLogin }) => {
   const [error, setError] = useState("");
   const submit = () => {
     if (
-      validateEmptyForm(formData.username) ||
+      validateEmptyForm(formData.name) ||
       validateEmptyForm(formData.email) ||
       validateEmptyForm(formData.password) ||
       validateEmptyForm(formData.confirmPassword)
@@ -34,6 +34,7 @@ const Signup = ({ setLogin }) => {
         .then((response) => {
           if (!response) {
             setIsLoading(false);
+            console.log(response);
             setError("El correo ya existe");
             setFormData(defaultFormValue());
           } else {
@@ -62,9 +63,9 @@ const Signup = ({ setLogin }) => {
           rightIconContainerStyle={styles.rightIcon}
           rightIcon={() => <Icon type="material-community" name="account" />}
           onChange={(e) =>
-            setFormData({ ...formData, username: e.nativeEvent.text })
+            setFormData({ ...formData, name: e.nativeEvent.text })
           }
-          value={formData.username}
+          value={formData.name}
         />
         <Input
           containerStyle={styles.inputStyleContainer}
@@ -125,7 +126,7 @@ const Signup = ({ setLogin }) => {
 
 function defaultFormValue() {
   return {
-    username: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
