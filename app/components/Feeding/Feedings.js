@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Switch,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
-import { Divider, Text } from "react-native-elements";
+import { StyleSheet, View, Switch, TouchableOpacity } from "react-native";
+import { Divider, Text, BottomSheet } from "react-native-elements";
 import { getColor } from "../../utils/colors";
-import Modal from "../../shared/Modal";
 import FeedingDiary from "./FeedingDiary";
 import FeedingMonthly from "./FeedingMonthly";
 import { ScrollView } from "react-native-gesture-handler";
 import FormulaFeeding from "./FeedingComponents/FormulaFeeding";
 import BreastFeeding from "./FeedingComponents/BreastFeeding";
 import { getTotalFeeding } from "../../services/feeding/feeding.service";
+import Modal from "../../shared/Modal";
 
 const Feedings = ({ user }) => {
   const [reloadData, setReloadData] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
+  const toggleBottomSheet = () => setBottomSheetVisible(true);
   const [todayDataOz, setTodayDataOz] = useState(null);
   const [todayDataMl, setTodayDataMl] = useState(null);
   const [todayDataSecs, setTodayDataSecs] = useState(null);
@@ -99,7 +95,7 @@ const Feedings = ({ user }) => {
           <FeedingMonthly
             reloadData={reloadData}
             setReloadData={setReloadData}
-            setIsVisible={setIsVisible}
+            setBottomSheetVisible={setBottomSheetVisible}
           />
         );
         break;
@@ -153,7 +149,13 @@ const Feedings = ({ user }) => {
             )}
           </View>
         </TouchableOpacity>
-        <View style={styles.touchableStyle} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => {
+            getComponent("month");
+            toggleBottomSheet();
+          }}
+        >
           <Text style={[styles.subtitle, styles.headerDate]}>
             Historico del Mes
           </Text>
@@ -174,8 +176,14 @@ const Feedings = ({ user }) => {
               <Text style={styles.subtitle}>{monthlyDataSecs + " hrs"}</Text>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
+      <BottomSheet
+        isVisible={bottomSheetVisible}
+        setIsVisible={setBottomSheetVisible}
+      >
+        {renderComponent}
+      </BottomSheet>
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
@@ -191,7 +199,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingLeft: 40,
     paddingRight: 40,
-    marginTop: "3%",
     marginBottom: 15,
   },
   buttonContainer: {
@@ -209,7 +216,7 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   containerFeedingDiary: {
-    height: Dimensions.get("window").height - 100,
+    flexGrow: 1,
     backgroundColor: getColor("backgroundColor"),
     padding: "5%",
   },

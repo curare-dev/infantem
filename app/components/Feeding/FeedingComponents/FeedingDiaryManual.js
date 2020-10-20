@@ -12,6 +12,7 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
   const [show, setShow] = useState(false);
   const [formData, setFormData] = useState(defaultFormValue());
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const months = [
     "Ene",
@@ -47,11 +48,13 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
   const showTimepicker = () => setShow(!show);
 
   const submitDreamingManual = () => {
+    setIsLoading(true);
     if (
       validateEmptyForm(formData.date) ||
       validateEmptyForm(formData.feedingType) ||
       validateEmptyForm(formData.quantity)
     ) {
+      setIsLoading(false);
       setError("Todos los campos son obligatorios");
     } else {
       postfeeding(formData)
@@ -61,12 +64,14 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
               date: "00:00:00",
               quantity: 0,
             });
+            setIsLoading(false);
             setError("");
             setIsVisible(false);
             setReloadData(true);
           } else setError("Error en el sistema");
         })
         .catch((error) => {
+          setIsLoading(false);
           setError("Error en el sistema, Catch");
         });
     }
@@ -100,9 +105,10 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
         />
       </TouchableOpacity>
       <Button
-        title="Ingresar Alimentacióm"
+        title="Ingresar Alimentación"
         onPress={submitDreamingManual}
         buttonStyle={styles.buttonStyle}
+        loading={isLoading}
       />
       {show && (
         <DateTimePicker

@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import Timer from "../../shared/Timer";
 import { getColor } from "../../utils/colors";
@@ -13,7 +12,7 @@ import DreamingDiaryManual from "./DreamingComponents/DreamingDiaryManual";
 import Modal from "../../shared/Modal";
 import DreamingDiary from "./DreamingDiary";
 import DreamingMonthly from "./DreamingMonthly";
-import { Button, Divider } from "react-native-elements";
+import { BottomSheet, Button, Divider } from "react-native-elements";
 import {
   getTotalDreaming,
   postDreaming,
@@ -22,6 +21,8 @@ import { validateEmptyForm } from "../../utils/validations";
 
 const Dreamings = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const toggleBottomSheet = () => setBottomSheetVisible(!bottomSheetVisible);
   const toggleModal = () => setIsVisible(true);
   const [renderComponent, setRenderComponent] = useState(null);
   const [time, setTime] = useState(null);
@@ -45,7 +46,13 @@ const Dreamings = () => {
         setRenderComponent(<DreamingDiary setIsVisible={setIsVisible} />);
         break;
       case "month":
-        setRenderComponent(<DreamingMonthly setIsVisible={setIsVisible} />);
+        setRenderComponent(
+          <DreamingMonthly
+            reloadData={reloadData}
+            setReloadData={setReloadData}
+            setBottomSheetVisible={setBottomSheetVisible}
+          />
+        );
         break;
     }
   };
@@ -68,7 +75,7 @@ const Dreamings = () => {
           });
         })
         .catch((error) => console.log(error));
-      getTotalDreaming("day")
+      getTotalDreaming("month")
         .then((response) => {
           response.map((l, i) => {
             let d = Number(l.total);
@@ -149,7 +156,13 @@ const Dreamings = () => {
           </View>
         </TouchableOpacity>
 
-        <View style={styles.touchableStyle} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => {
+            getComponent("month");
+            toggleBottomSheet();
+          }}
+        >
           <Text style={[styles.subtitle, styles.headerDate]}>
             Historico del Mes
           </Text>
@@ -160,8 +173,14 @@ const Dreamings = () => {
               <Text style={styles.subtitle}>{monthlyDataSecs + " hrs"}</Text>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
+      <BottomSheet
+        isVisible={bottomSheetVisible}
+        setIsVisible={setBottomSheetVisible}
+      >
+        {renderComponent}
+      </BottomSheet>
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
@@ -173,8 +192,8 @@ export default Dreamings;
 
 const styles = StyleSheet.create({
   containerDreamingDiary: {
-    height: Dimensions.get("window").height - 100,
     backgroundColor: getColor("backgroundColor"),
+    flexGrow: 1,
     padding: "10%",
   },
   textRight: {

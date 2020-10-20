@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   diaperContainer: {
-    height: Dimensions.get("window").height,
+    flexGrow: 1,
     backgroundColor: getColor("backgroundColor"),
   },
   countDiapersColumn: {

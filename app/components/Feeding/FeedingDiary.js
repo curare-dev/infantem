@@ -7,6 +7,7 @@ const FeedingDiary = ({ reloadData, setReloadData }) => {
   const [showData, setShowData] = useState(null);
   const [type, setType] = useState({ type: "day" });
   const [error, setError] = useState("");
+
   useEffect(() => {
     async function fetchFeedingByDay() {
       setReloadData(false);
@@ -44,6 +45,7 @@ const FeedingDiary = ({ reloadData, setReloadData }) => {
     }
     fetchFeedingByDay();
   }, [reloadData]);
+
   return (
     <ScrollView>
       {showData ? showData : <Text style={styles.noDataText}>{error}</Text>}

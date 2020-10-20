@@ -25,6 +25,29 @@ export const postDreaming = async (obj) => {
   }
 };
 
+export const getDreaming = async (type) => {
+  try {
+    let userid = await SecureStore.getItemAsync("id");
+    userid = userid.slice(1, -1);
+    let response = await fetch(`${API}/dreaming/${userid}`, {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(type),
+    });
+    let status = await response.status;
+    if (status === 200 || status === 304) {
+      let json = await response.json();
+      return json;
+    } else return false;
+  } catch (error) {
+    console.log("Error desde Dreaming Service", error);
+    return false;
+  }
+};
+
 export const getTotalDreaming = async (type) => {
   try {
     let userid = await SecureStore.getItemAsync("id");

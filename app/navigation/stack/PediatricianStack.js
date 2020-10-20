@@ -11,20 +11,11 @@ import ShowAppointments from "../../components/Pediatrician/ShowAppointments";
 const Stack = createStackNavigator();
 
 const PediatricianStack = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisible = () => {
-    setIsVisible(!isVisible);
-  };
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="pediatrician"
-        component={() => (
-          <Pediatrician
-            isVisible={isVisible}
-            setIsVisible={setIsVisible}
-          ></Pediatrician>
-        )}
+        component={() => <Pediatrician />}
         options={{
           headerTitle: () => <Text style={styles.headerTitle}>Pediatras</Text>,
           headerStyle: {
@@ -33,19 +24,6 @@ const PediatricianStack = () => {
             elevation: 0,
             shadowColor: getColor("shadowColor"),
           },
-          headerRight: () => (
-            <TouchableOpacity
-              style={styles.iconCalendar}
-              onPress={toggleVisible}
-            >
-              <Text style={styles.text}>Ver tus Citas</Text>
-              <Icon
-                type="material-community"
-                name="calendar"
-                color={getColor("headerText")}
-              />
-            </TouchableOpacity>
-          ),
         }}
       ></Stack.Screen>
     </Stack.Navigator>

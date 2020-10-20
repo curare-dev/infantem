@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, ScrollView, Dimensions } from "react-native";
 import { getColor } from "../../utils/colors";
 import ProfileTop from "../../components/Profile/ProfileTop";
@@ -21,6 +21,7 @@ export default Profile;
 
 const styles = StyleSheet.create({
   profileContainer: {
+    flexGrow: 1,
     backgroundColor: getColor("backgroundColor"),
   },
 });

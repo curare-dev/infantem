@@ -4,11 +4,11 @@ import { getColor } from "../../utils/colors";
 import { Text, Button, Divider, Overlay } from "react-native-elements";
 import Appointment from "./Appointment";
 import MapView, { Marker } from "react-native-maps";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 const PediatricianPage = ({ pediatrician }) => {
   let { uuid, name, ubicacion, coordinates } = pediatrician;
   const [visible, setVisible] = useState(false);
+  const [isMedicRegistered, setIsMedicRegistered] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
   };
@@ -52,10 +52,11 @@ const PediatricianPage = ({ pediatrician }) => {
         ></Marker>
       </MapView>
       <Button
-        title="Pide una consulta Aquí"
+        title={isMedicRegistered ? "Hacer Cita" : "Medico No Registrado"}
         buttonStyle={styles.buttonStyle}
         containerStyle={styles.buttonContainer}
         onPress={toggleOverlay}
+        disabled={!isMedicRegistered}
       />
       <Overlay
         isVisible={visible}

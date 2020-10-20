@@ -12,6 +12,8 @@ const FormulaFeeding = ({ setReloadData, user }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
   const showTimepicker = () => setShow(!show);
+  const [isLoading, setIsLoading] = useState(false);
+
   const formatDateTime = (receivedDate) => {
     if (receivedDate === undefined || receivedDate === "00:00:00") {
       return `00:00:00`;
@@ -31,23 +33,29 @@ const FormulaFeeding = ({ setReloadData, user }) => {
   };
 
   const submitFeeding = async () => {
+    setIsLoading(true);
     formData.feedingType = user.feedingType;
     if (
       validateEmptyForm(formData.date) ||
       validateEmptyForm(formData.quantity) ||
       validateEmptyForm(formData.feedingType)
     ) {
+      setIsLoading(false);
       setError("Todos los campos son obligatorios");
     } else {
       await postfeeding(formData)
         .then((response) => {
           if (response) {
+            setIsLoading(false);
             setFormData({ quantity: "" });
             setError("");
             setReloadData(true);
           } else setError("Error en el sistema");
         })
-        .catch(() => setError("Error en el sistema"));
+        .catch(() => {
+          setIsLoading(false);
+          setError("Error en el sistema");
+        });
     }
   };
 
@@ -97,6 +105,7 @@ const FormulaFeeding = ({ setReloadData, user }) => {
         containerStyle={styles.buttonContainer}
         buttonStyle={styles.buttonStyle}
         onPress={submitFeeding}
+        loading={isLoading}
       />
       {show && (
         <DateTimePicker

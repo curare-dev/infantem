@@ -5,14 +5,9 @@ import { getColor } from "../utils/colors";
 
 export default function Loading(props) {
   const { isVisible, text } = props;
-
+  const dismissBackdrop = () => !isVisible;
   return (
-    <Overlay
-      isVisible={isVisible}
-      windowBackgroundColor="transparent"
-      overlayBackgroundColor="transparent"
-      overlayStyle={styles.overlay}
-    >
+    <Overlay isVisible={isVisible} overlayStyle={styles.overlay}>
       <View style={styles.view}>
         <ActivityIndicator size="large" color={getColor("backgroundColor")} />
         {text && <Text style={styles.text}>{text}</Text>}
@@ -23,9 +18,10 @@ export default function Loading(props) {
 
 const styles = StyleSheet.create({
   overlay: {
-    height: 200,
-    width: 200,
-    backgroundColor: "transparent",
+    height: "100%",
+    width: "100%",
+    backgroundColor: getColor("headerBackgroundColor"),
+    opacity: 0.5,
   },
   view: {
     flex: 1,

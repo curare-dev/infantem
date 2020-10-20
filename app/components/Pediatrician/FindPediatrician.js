@@ -14,6 +14,7 @@ const FindPediatrician = () => {
   const toggleOverlay = () => {
     setVisible(!visible);
   };
+
   useEffect(() => {
     async function fetchUserLocation() {
       let userLocation = await getUserLocation();

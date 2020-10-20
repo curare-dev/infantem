@@ -15,6 +15,7 @@ const BreastFeeding = ({ setReloadData }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const getComponent = (component) => {
     switch (component) {
@@ -29,7 +30,9 @@ const BreastFeeding = ({ setReloadData }) => {
     }
   };
   const submitBreastfeeding = () => {
+    setIsLoading(true);
     if (validateEmptyForm(time) || time === 0) {
+      setIsLoading(false);
       setError("El timer esta en 0");
     } else {
       postfeeding({
@@ -38,11 +41,15 @@ const BreastFeeding = ({ setReloadData }) => {
         quantity: time,
       })
         .then(() => {
+          setIsLoading(false);
           setResetTimer(true);
-          setError("Agregado");
+          setError("");
           setReloadData(true);
         })
-        .catch(() => setError("Error en el sistema"));
+        .catch(() => {
+          setIsLoading(false);
+          setError("Error en el sistema");
+        });
     }
   };
   return (
@@ -66,6 +73,7 @@ const BreastFeeding = ({ setReloadData }) => {
         containerStyle={styles.buttonContainerStyle}
         buttonStyle={styles.buttonStyle}
         onPress={submitBreastfeeding}
+        loading={isLoading}
       />
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
