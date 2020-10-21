@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
 import { getDreaming } from "../../services/dreaming/dreaming.service";
 import Modal from "../../shared/Modal";
+import { getColor } from "../../utils/colors";
 import DreamingWeekly from "./DreamingComponents/DreamingWeekly";
 
 const DreamingMonthly = ({
@@ -49,40 +50,26 @@ const DreamingMonthly = ({
                 let day = date.getDate();
                 if (day >= 1 && day <= 7 && l.dreamingType === "Secs") {
                   drWeekOne += l.quantity;
-                  objOne.push({
-                    cantidad: l.quantity,
-                    tipo: l.dreamingType,
-                    fecha: date,
-                  });
+                  objOne.push(
+                    l
+                  );
                 } else if (day >= 8 && day <= 15 && l.dreamingType === "Secs") {
                   drWeekTwo += l.quantity;
-                  objTwo.push({
-                    cantidad: l.quantity,
-                    tipo: l.dreamingType,
-                    fecha: date,
-                  });
+                  objTwo.push(l);
                 } else if (
                   day >= 16 &&
                   day <= 23 &&
                   l.dreamingType === "Secs"
                 ) {
                   drWeekThree += l.quantity;
-                  objThree.push({
-                    cantidad: l.quantity,
-                    tipo: l.dreamingType,
-                    fecha: date,
-                  });
+                  objThree.push(l);
                 } else if (
                   day >= 24 &&
                   day <= 31 &&
                   l.dreamingType === "Secs"
                 ) {
                   drWeekFour += l.quantity;
-                  objFour.push({
-                    cantidad: l.quantity,
-                    tipo: l.dreamingType,
-                    fecha: date,
-                  });
+                  objFour.push(l);
                 }
                 day < 10 ? (day = `0${day}`) : day;
                 month < 10 ? (month = `0${month}`) : month;
@@ -193,4 +180,8 @@ const DreamingMonthly = ({
 
 export default DreamingMonthly;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  closeBottomSheet: {
+    backgroundColor: getColor("buttonColor"),
+  },
+});

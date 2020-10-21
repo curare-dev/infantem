@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { ListItem } from "react-native-elements";
+import { Icon, ListItem } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 
 const FeedingWeekly = (props) => {
@@ -44,10 +44,18 @@ const FeedingWeekly = (props) => {
     }
   };
 
+  const editDreaming = (id) => {
+    console.log("Pushado para editar: ", id);
+  }
+
+  const deleteDreaming = (id) => {
+    console.log("Pushado para eliminar: ", id);
+  }
+
   return (
     <ScrollView>
       {props.data.map((l, i) => {
-        let date = new Date(l.fecha);
+        let date = new Date(l.date);
         let year = date.getFullYear();
         let month = months[date.getMonth()];
         let day = date.getDate();
@@ -55,9 +63,21 @@ const FeedingWeekly = (props) => {
         return (
           <ListItem key={i} bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>{formatTitle(l.tipo, l.cantidad)}</ListItem.Title>
-              <ListItem.Subtitle>{`${dayName} ${day} de ${month} del ${year}`}</ListItem.Subtitle>
+              <ListItem.Title>{formatTitle(l.feedingType, l.quantity)}</ListItem.Title>
+              <ListItem.Subtitle>{`${dayName} ${day} de ${month} ${year}`}</ListItem.Subtitle>
             </ListItem.Content>
+            <Icon   
+            name='pencil'
+            type='material-community'
+            size={20}
+            onPress={()=>editDreaming(l._id)}
+            />
+            <Icon   
+            name='delete'
+            type='material-community'
+            size={20}
+            onPress={()=>deleteDreaming(l._id)}
+            />
           </ListItem>
         );
       })}

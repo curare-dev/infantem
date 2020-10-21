@@ -1,38 +1,81 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { ListItem } from "react-native-elements";
+import { Icon, ListItem } from "react-native-elements";
 
 const DreamingWeekly = (props) => {
   const [reloadData, setReloadData] = useState(false);
-  const [display, setDisplay] = useState("none");
   const [renderData, setRenderData] = useState(null);
 
-  const toggleDisplay = () => {
-    if (display === "none") {
-      setDisplay("flex");
-    } else {
-      setDisplay("none");
-    }
+  const months = [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ];
+  const days = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miercoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ];
+
+  const formatedSeconds = (secs) => {
+    let d = Number(secs);
+    const h = Math.floor(d / 3600);
+    const m = Math.floor((d % 3600) / 60);
+    const s = Math.floor((d % 3600) % 60);
+    return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
+      s < 10 ? "0" + s : s
+    }`;
   };
 
-  let a = props.data.reduce((r, a) => {
-    console.log("a: ", a);
-    console.log("r: ", r);
-  }, {});
+  const editDreaming = (id) => {
+    console.log("Pushado para editar: ", id);
+  }
 
-  console.log(a);
+  const deleteDreaming = (id) => {
+    console.log("Pushado para eliminar: ", id);
+  }
 
   useEffect(() => {
     setRenderData(
       props.data.map((l, i) => {
-        let day = new Date(l.fecha);
+        let date = new Date(l.date);
+        let year = date.getFullYear();
+        let month = months[date.getMonth()];
+        let day = date.getDate();
+        let dayName = days[date.getDay()];
         return (
           <ListItem key={i}>
             <ListItem.Content>
               <ListItem.Title>
-                {l.cantidad} {l.tipo}
+                {formatedSeconds(l.quantity)} 
               </ListItem.Title>
+              <ListItem.Subtitle>{`${dayName} ${day} de ${month} ${year}`}</ListItem.Subtitle>
             </ListItem.Content>
+            <Icon   
+            name='pencil'
+            type='material-community'
+            size={20}
+            onPress={()=>editDreaming(l._id)}
+            />
+            <Icon   
+            name='delete'
+            type='material-community'
+            size={20}
+            onPress={()=>deleteDreaming(l._id)}
+            />
           </ListItem>
         );
       })

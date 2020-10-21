@@ -70,88 +70,40 @@ const FeedingMonthly = ({
                 let day = date.getDate();
                 if (day >= 1 && day <= 7 && l.feedingType === "oz") {
                   ozWeekOne += l.quantity;
-                  objOne.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objOne.push(l);
                 } else if (day >= 8 && day <= 15 && l.feedingType === "oz") {
                   ozWeekTwo += l.quantity;
-                  objTwo.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objTwo.push(l);
                 } else if (day >= 16 && day <= 23 && l.feedingType === "oz") {
                   ozWeekThree += l.quantity;
-                  objThree.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objThree.push(l);
                 } else if (day >= 24 && day <= 31 && l.feedingType === "oz") {
                   ozWeekFour += l.quantity;
-                  objFour.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objFour.push(l);
                 } else if (day >= 1 && day <= 7 && l.feedingType === "ml") {
                   mlWeekOne += l.quantity;
-                  objOne.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objOne.push(l);
                 } else if (day >= 8 && day <= 15 && l.feedingType === "ml") {
                   mlWeekTwo += l.quantity;
-                  objTwo.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objTwo.push(l);
                 } else if (day >= 16 && day <= 23 && l.feedingType === "ml") {
                   mlWeekThree += l.quantity;
-                  objThree.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objThree.push(l);
                 } else if (day >= 24 && day <= 31 && l.feedingType === "ml") {
                   mlWeekFour += l.quantity;
-                  objFour.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objFour.push(l);
                 } else if (day >= 1 && day <= 7 && l.feedingType === "Secs") {
                   bfWeekOne += l.quantity;
-                  objOne.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objOne.push(l);
                 } else if (day >= 8 && day <= 15 && l.feedingType === "Secs") {
                   bfWeekTwo += l.quantity;
-                  objTwo.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objTwo.push(l);
                 } else if (day >= 16 && day <= 23 && l.feedingType === "Secs") {
                   bfWeekThree += l.quantity;
-                  objThree.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objThree.push(l);
                 } else if (day >= 24 && day <= 31 && l.feedingType === "Secs") {
                   bfWeekFour += l.quantity;
-                  objFour.push({
-                    cantidad: l.quantity,
-                    tipo: l.feedingType,
-                    fecha: date,
-                  });
+                  objFour.push(l);
                 }
                 day < 10 ? (day = `0${day}`) : day;
                 month < 10 ? (month = `0${month}`) : month;
