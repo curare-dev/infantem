@@ -25,6 +25,49 @@ export const postDreaming = async (obj) => {
   }
 };
 
+export const updateDreaming = async (obj) => {
+  console.log("Objeto en service Update Dreaming: ", obj);
+  try {
+    let response = await fetch(`${API}/dreaming/${obj._id}`, {
+      method: "PUT",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    });
+    let status = await response.status;
+    if (status === 204) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error desde servicio Dreaming", error);
+  }
+}
+
+export const deleteDreaming = async (obj) => {
+  console.log(obj);
+  try {
+    let response = await fetch(`${API}/dreaming/${obj}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+    });
+    let status = await response.status;
+    if (status === 204) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error desde servicio Dreaming", error);
+  }
+}
+
 export const getDreaming = async (type) => {
   try {
     let userid = await SecureStore.getItemAsync("id");

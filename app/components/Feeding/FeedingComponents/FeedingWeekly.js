@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Icon, ListItem } from "react-native-elements";
+import { Button, Icon, ListItem } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
+import Modal from "../../../shared/Modal";
+import DeleteFeeding from "./DeleteFeeding";
+import EditFeeding from "./EditFeeding";
 
-const FeedingWeekly = (props) => {
+const FeedingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModalVisible, setReloadData }) => {
+  const [modalVisibleWeek, setModalVisibleWeek] = useState(false);
+  const [renderComponent, setRenderComponent] = useState(null);
+  const [renderData, setRenderData] = useState(null);
+  const [reloadWeekly, setReloadWeekly] = useState(false);
   const months = [
     "Ene",
     "Feb",
@@ -44,17 +51,39 @@ const FeedingWeekly = (props) => {
     }
   };
 
-  const editDreaming = (id) => {
-    console.log("Pushado para editar: ", id);
+  const editDreaming = (data) => {
+    setModalVisibleWeek(true);
+    setRenderComponent(
+      <EditFeeding
+        setReloadWeekly={setReloadWeekly}
+        setModalVisibleWeek={setModalVisibleWeek}
+        setBottomSheetVisible={setBottomSheetVisible}
+        setModalVisible={setModalVisible}
+        setReloadData={setReloadData}
+        data={data}
+      />
+    );
   }
 
   const deleteDreaming = (id) => {
-    console.log("Pushado para eliminar: ", id);
+    setModalVisibleWeek(true);
+    setRenderComponent(
+      <DeleteFeeding
+        setReloadWeekly={setReloadWeekly}
+        setModalVisibleWeek={setModalVisibleWeek}
+        setModalVisible={setModalVisible}
+        setReloadData={setReloadData}
+        data={id}
+      />
+    );
   }
 
-  return (
-    <ScrollView>
-      {props.data.map((l, i) => {
+  useEffect(() => {
+    console.log("Se recarga Weekly");
+    setReloadWeekly(false);
+    setReloadMonthly(true);
+    setRenderData(
+      data.map((l, i) => {
         let date = new Date(l.date);
         let year = date.getFullYear();
         let month = months[date.getMonth()];
@@ -70,17 +99,26 @@ const FeedingWeekly = (props) => {
             name='pencil'
             type='material-community'
             size={20}
-            onPress={()=>editDreaming(l._id)}
+            onPress={()=>editDreaming(l)}
             />
             <Icon   
             name='delete'
             type='material-community'
             size={20}
-            onPress={()=>deleteDreaming(l._id)}
+            onPress={()=>deleteDreaming(l)}
             />
           </ListItem>
         );
-      })}
+      })
+    );
+  }, [reloadWeekly])
+
+  return (
+    <ScrollView>
+      {renderData}
+      <Modal isVisible={modalVisibleWeek} setIsVisible={setModalVisibleWeek}>
+        {renderComponent}
+      </Modal>
     </ScrollView>
   );
 };

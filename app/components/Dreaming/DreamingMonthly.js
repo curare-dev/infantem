@@ -20,6 +20,7 @@ const DreamingMonthly = ({
   const [weekTwoData, setWeekTwoData] = useState(null);
   const [weekThreeData, setWeekThreeData] = useState(null);
   const [weekFourData, setWeekFourData] = useState(null);
+  const [reloadMonthly, setReloadMonthly] = useState(false);
   let objOne = [];
   let objTwo = [];
   let objThree = [];
@@ -36,6 +37,7 @@ const DreamingMonthly = ({
     let drWeekThree = 0;
     let drWeekFour = 0;
     async function fetchDreamingByDay() {
+      setReloadMonthly(false);
       setReloadData(false);
       getDreaming(type)
         .then((response) => {
@@ -90,25 +92,49 @@ const DreamingMonthly = ({
         .catch((error) => console.log("Error", error));
     }
     fetchDreamingByDay();
-  }, [reloadData]);
+  }, [reloadMonthly]);
 
   const openList = (week) => {
     switch (week) {
       case 1:
         setModalVisible(true);
-        setRenderComponent(<DreamingWeekly data={weekOneData} />);
+        setRenderComponent(<DreamingWeekly 
+          data={weekOneData}
+          setReloadMonthly={setReloadMonthly} 
+          setBottomSheetVisible={setBottomSheetVisible} 
+          setModalVisible={setModalVisible}
+          setReloadData={setReloadData}
+         />);
         break;
       case 2:
         setModalVisible(true);
-        setRenderComponent(<DreamingWeekly data={weekTwoData} />);
+        setRenderComponent(<DreamingWeekly 
+          data={weekTwoData} 
+          setReloadMonthly={setReloadMonthly} 
+          setBottomSheetVisible={setBottomSheetVisible} 
+          setModalVisible={setModalVisible}
+          setReloadData={setReloadData}
+        />);
         break;
       case 3:
         setModalVisible(true);
-        setRenderComponent(<DreamingWeekly data={weekThreeData} />);
+        setRenderComponent(<DreamingWeekly 
+          data={weekThreeData} 
+          setReloadMonthly={setReloadMonthly} 
+          setBottomSheetVisible={setBottomSheetVisible} 
+          setModalVisible={setModalVisible}
+          setReloadData={setReloadData}
+        />);
         break;
       case 4:
         setModalVisible(true);
-        setRenderComponent(<DreamingWeekly data={weekFourData} />);
+        setRenderComponent(<DreamingWeekly 
+          data={weekFourData} 
+          setReloadMonthly={setReloadMonthly} 
+          setBottomSheetVisible={setBottomSheetVisible} 
+          setModalVisible={setModalVisible}
+          setReloadData={setReloadData}
+        />);
         break;
       case 5:
         setBottomSheetVisible(false);

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Switch, TouchableOpacity } from "react-native";
 import { Divider, Text, BottomSheet } from "react-native-elements";
 import { getColor } from "../../utils/colors";
-import FeedingDiary from "./FeedingDiary";
-import FeedingMonthly from "./FeedingMonthly";
 import { ScrollView } from "react-native-gesture-handler";
 import FormulaFeeding from "./FeedingComponents/FormulaFeeding";
 import BreastFeeding from "./FeedingComponents/BreastFeeding";
 import { getTotalFeeding } from "../../services/feeding/feeding.service";
 import Modal from "../../shared/Modal";
+import FeedingDiary from "./FeedingComponents/FeedingDiary";
+import FeedingMonthly from "./FeedingComponents/FeedingMonthly";
 
 const Feedings = ({ user }) => {
   const [reloadData, setReloadData] = useState(false);
@@ -16,22 +16,37 @@ const Feedings = ({ user }) => {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
   const toggleBottomSheet = () => setBottomSheetVisible(true);
+
   const [todayDataOz, setTodayDataOz] = useState(null);
   const [todayDataMl, setTodayDataMl] = useState(null);
   const [todayDataSecs, setTodayDataSecs] = useState(null);
   const [monthlyDataOz, setMonthlyDataOz] = useState(null);
   const [monthlyDataMl, setMonthlyDataMl] = useState(null);
   const [monthlyDataSecs, setMonthlyDataSecs] = useState(null);
+
   const [renderComponent, setRenderComponent] = useState(null);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+
   useEffect(() => {
+    setTodayDataOz(null); 
+    setTodayDataMl(null);
+    setTodayDataSecs(null); 
+    setMonthlyDataOz(null);
+    setMonthlyDataMl(null);
+    setMonthlyDataSecs(null);
     setReloadData(false);
     async function getTotalData() {
       getTotalFeeding("day")
         .then((response) => {
           response.map((l, i) => {
+            let d = Number(l.total);
+            const h = Math.floor(d / 3600);
+            const m = Math.floor((d % 3600) / 60);
+            const s = Math.floor((d % 3600) % 60);
+            console.log("Se recarga Feedings");
+            console.log("L: ", l);
             if (l._id === "oz") {
               setTodayDataOz(l.total);
             }
@@ -39,10 +54,6 @@ const Feedings = ({ user }) => {
               setTodayDataMl(l.total);
             }
             if (l._id === "Secs") {
-              let d = Number(l.total);
-              const h = Math.floor(d / 3600);
-              const m = Math.floor((d % 3600) / 60);
-              const s = Math.floor((d % 3600) % 60);
               setTodayDataSecs(
                 `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
                   s < 10 ? "0" + s : s
@@ -55,6 +66,7 @@ const Feedings = ({ user }) => {
       getTotalFeeding("month")
         .then((response) => {
           response.map((l, i) => {
+            console.log("M: ", l);
             if (l._id === "oz") {
               setMonthlyDataOz(l.total);
             }
@@ -84,7 +96,6 @@ const Feedings = ({ user }) => {
       case "day":
         setRenderComponent(
           <FeedingDiary
-            reloadData={reloadData}
             setReloadData={setReloadData}
             setIsVisible={setIsVisible}
           />
@@ -93,7 +104,6 @@ const Feedings = ({ user }) => {
       case "month":
         setRenderComponent(
           <FeedingMonthly
-            reloadData={reloadData}
             setReloadData={setReloadData}
             setBottomSheetVisible={setBottomSheetVisible}
           />
@@ -135,9 +145,10 @@ const Feedings = ({ user }) => {
           <Divider style={styles.divider} />
           <View style={styles.headerText}>
             {todayDataOz || todayDataMl ? <Text>Formula</Text> : null}
-            {todayDataOz && (
+            {todayDataOz ? (
               <Text style={styles.subtitle}>{todayDataOz + " Onzas"}</Text>
-            )}
+            ) :
+            null}
             {todayDataMl && (
               <Text style={styles.subtitle}>{todayDataMl + " ml"}</Text>
             )}

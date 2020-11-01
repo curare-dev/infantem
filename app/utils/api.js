@@ -1,1 +1,3 @@
-export const API = "http://192.168.100.5:3001";
+// Add https to instance (port 443)
+
+export const API = "http://3.16.220.202:3001";

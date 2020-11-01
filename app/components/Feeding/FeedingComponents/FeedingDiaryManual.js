@@ -7,152 +7,94 @@ import { validateEmptyForm } from "../../../utils/validations";
 import { postfeeding } from "../../../services/feeding/feeding.service";
 
 const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
-  const [showHours, setShowHours] = useState(new Date().setHours(0, 0, 0, 0));
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [formData, setFormData] = useState(defaultFormValue());
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  let [mins, setMins] = useState(null);
+  let [hrs, setHrs] = useState(null);
 
-  const months = [
-    "Ene",
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  const days = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
-  let day = days[date.getDay()];
-  let mins = date.getMinutes();
-  let hrs = date.getHours();
-  let dateF = date.getDate();
-  let month = months[date.getMonth()];
-  let year = date.getFullYear();
-  let ampm = "am";
+  // console.log(new Date().getDate(), new Date().getHours(), new Date().getMinutes());
 
-  const showTimepicker = () => setShow(!show);
-
-  const submitDreamingManual = () => {
-    setIsLoading(true);
-    if (
-      validateEmptyForm(formData.date) ||
-      validateEmptyForm(formData.feedingType) ||
-      validateEmptyForm(formData.quantity)
-    ) {
-      setIsLoading(false);
+  const submitFeedingManual = () => {
+    if(!hrs && !mins){
       setError("Todos los campos son obligatorios");
     } else {
+      hrs ? hrs  : hrs = 0;
+      mins ? mins : mins = 0;
+      formData.quantity = hrs + mins;
+      formData.feedingType= "Secs";
+      formData.date = new Date();
       postfeeding(formData)
         .then((response) => {
           if (response) {
-            setFormData({
-              date: "00:00:00",
-              quantity: 0,
-            });
-            setIsLoading(false);
+            console.log(formData);
             setError("");
             setIsVisible(false);
             setReloadData(true);
           } else setError("Error en el sistema");
         })
         .catch((error) => {
-          setIsLoading(false);
           setError("Error en el sistema, Catch");
-        });
+      });
     }
   };
-  const formatDateTime = (receivedDate) => {
-    if (receivedDate === undefined || receivedDate === "00:00:00") {
-      return `00:00:00`;
-    } else {
-      let ampm = "am";
-      let mins = formData.date.getMinutes();
-      let hrs = formData.date.getHours();
-      if (mins < 10) {
-        mins = "0" + mins;
-      }
-      if (hrs > 12) {
-        hrs -= 12;
-        ampm = "pm";
-      }
-      return `${hrs}:${mins}:00`;
-    }
-  };
+
   return (
-    <View>
-      <TouchableOpacity onPress={showTimepicker}>
-        <Input
-          label="Duración de la alimentación"
-          value={formatDateTime(formData.date)}
-          disabled
-          errorStyle={styles.errorStyle}
-          errorMessage={error}
+    <View style={styles.container}>
+      <View style={styles.secViewInput}>
+        <Input 
+          style={styles.input} 
+          label="Horas"
+          labelStyle={styles.inputA}
+          keyboardType="numeric"
+          onChange={(e) => {
+            let hrsInput = e.nativeEvent.text * 3600
+            setHrs(hrsInput);
+          }} 
+          placeholder="00"
         />
-      </TouchableOpacity>
+        <Input 
+          style={styles.input} 
+          label="Minutos" 
+          labelStyle={styles.inputB}
+          keyboardType="numeric"
+          onChange={(e) => {
+            let minsInput =  e.nativeEvent.text * 60
+            setMins(minsInput);
+          }} 
+          placeholder="00"
+        /> 
+      </View>
+      <Text style={styles.errorStyle}>{error}</Text>
       <Button
         title="Ingresar Alimentación"
-        onPress={submitDreamingManual}
+        onPress={submitFeedingManual}
         buttonStyle={styles.buttonStyle}
-        loading={isLoading}
       />
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={showHours}
-          mode={"time"}
-          display="default"
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate;
-            setShow(Platform.OS === "ios");
-            setFormData({
-              date: currentDate,
-              feedingType: "Secs",
-              quantity:
-                currentDate.getHours() * 60 * 60 +
-                currentDate.getMinutes() * 60,
-            });
-          }}
-        />
-      )}
     </View>
   );
 };
-
-function defaultFormValue() {
-  return {
-    quantity: "",
-    feedingType: "Oz",
-  };
-}
 
 export default FeedingDiaryManual;
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    alignSelf: "center",
     backgroundColor: getColor("buttonColor"),
     width: "90%",
+    alignSelf: "center",
+    textAlign: "center"
   },
   errorStyle: {
-    marginTop: "3%",
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 15,
     color: "red",
   },
+  secViewInput:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "40%",
+  },
+  container: {
+    alignSelf: "center"
+  }
 });

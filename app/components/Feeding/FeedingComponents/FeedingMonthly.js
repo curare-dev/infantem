@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
-import { getFeeding } from "../../services/feeding/feeding.service";
-import Modal from "../../shared/Modal";
-import { getColor } from "../../utils/colors";
-import FeedingWeekly from "./FeedingComponents/FeedingWeekly";
+import { getFeeding } from "../../../services/feeding/feeding.service";
+import Modal from "../../../shared/Modal";
+import { getColor } from "../../../utils/colors";
+import FeedingWeekly from "./FeedingWeekly";
 
 const FeedingMonthly = ({
-  reloadData,
   setReloadData,
   setBottomSheetVisible,
 }) => {
@@ -20,6 +19,8 @@ const FeedingMonthly = ({
   const [weekTwoData, setWeekTwoData] = useState(null);
   const [weekThreeData, setWeekThreeData] = useState(null);
   const [weekFourData, setWeekFourData] = useState(null);
+  const [reloadMonthly, setReloadMonthly] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   let objOne = [];
   let objTwo = [];
   let objThree = [];
@@ -42,7 +43,10 @@ const FeedingMonthly = ({
     weekThree: "",
     weekFour: "",
   });
+  
   useEffect(() => {
+    console.log("Se recarga Monthly");
+    setIsLoading(true);
     let ozWeekOne = 0;
     let ozWeekTwo = 0;
     let ozWeekThree = 0;
@@ -55,8 +59,9 @@ const FeedingMonthly = ({
     let bfWeekTwo = 0;
     let bfWeekThree = 0;
     let bfWeekFour = 0;
+    setReloadMonthly(false);
+    setReloadData(true);
     async function fetchFeedingByDay() {
-      setReloadData(false);
       getFeeding(type)
         .then((response) => {
           if (response.length === 0) {
@@ -107,6 +112,7 @@ const FeedingMonthly = ({
                 }
                 day < 10 ? (day = `0${day}`) : day;
                 month < 10 ? (month = `0${month}`) : month;
+                setIsLoading(false);
               })
             );
           }
@@ -136,25 +142,49 @@ const FeedingMonthly = ({
         .catch((error) => console.log("Error", error));
     }
     fetchFeedingByDay();
-  }, [reloadData]);
+  }, [reloadMonthly]);
 
   const openList = (week) => {
     switch (week) {
       case 1:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly data={weekOneData} />);
+        setRenderComponent(<FeedingWeekly 
+                              data={weekOneData} 
+                              setReloadMonthly={setReloadMonthly} 
+                              setBottomSheetVisible={setBottomSheetVisible} 
+                              setModalVisible={setModalVisible}
+                              setReloadData={setReloadData}
+                            />);
         break;
       case 2:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly data={weekTwoData} />);
+        setRenderComponent(<FeedingWeekly 
+                              data={weekTwoData} 
+                              setReloadMonthly={setReloadMonthly} 
+                              setBottomSheetVisible={setBottomSheetVisible} 
+                              setModalVisible={setModalVisible}
+                              setReloadData={setReloadData}
+                            />);
         break;
       case 3:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly data={weekThreeData} />);
+        setRenderComponent(<FeedingWeekly 
+                              data={weekThreeData} 
+                              setReloadMonthly={setReloadMonthly} 
+                              setBottomSheetVisible={setBottomSheetVisible}
+                              setModalVisible={setModalVisible}
+                              setReloadData={setReloadData}
+                            />);
         break;
       case 4:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly data={weekFourData} />);
+        setRenderComponent(<FeedingWeekly 
+                              data={weekFourData} 
+                              setReloadMonthly={setReloadMonthly} 
+                              setBottomSheetVisible={setBottomSheetVisible}
+                              setModalVisible={setModalVisible}
+                              setReloadData={setReloadData}
+                            />);
         break;
       case 5:
         setBottomSheetVisible(false);
@@ -176,7 +206,18 @@ const FeedingMonthly = ({
 
   return (
     <ScrollView>
-      <ListItem onPress={() => openList(1)} bottomDivider>
+      {isLoading ? 
+      <View>
+        <ListItem>
+          <ListItem.Content style={styles.activityIndicator}>
+            <ActivityIndicator size="large" color={getColor("backgroundColor")} /> 
+          </ListItem.Content>
+        </ListItem>
+      </View>
+
+      :
+      <View>
+        <ListItem onPress={() => openList(1)} bottomDivider>
         <ListItem.Content>
           <ListItem.Title>Semana 1</ListItem.Title>
           <ListItem.Subtitle>Onzas: {totalOz.weekOne}</ListItem.Subtitle>
@@ -220,6 +261,8 @@ const FeedingMonthly = ({
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
+      </View>
+      }
       <Button
         buttonStyle={styles.closeBottomSheet}
         title="Cerrar"
@@ -238,4 +281,8 @@ const styles = StyleSheet.create({
   closeBottomSheet: {
     backgroundColor: getColor("buttonColor"),
   },
+  activityIndicator: {
+    height: 225,
+    alignItems: "center"
+  }
 });

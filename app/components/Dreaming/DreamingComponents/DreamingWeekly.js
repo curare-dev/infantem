@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Icon, ListItem } from "react-native-elements";
+import Modal from "../../../shared/Modal";
+import DeleteDreaming from "./DeleteDreaming";
+import EditDreaming from "./EditDreaming";
 
-const DreamingWeekly = (props) => {
-  const [reloadData, setReloadData] = useState(false);
+const DreamingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModalVisible, setReloadData }) => {
+  const [modalVisibleWeek, setModalVisibleWeek] = useState(false);
+  const [renderComponent, setRenderComponent] = useState(null);
   const [renderData, setRenderData] = useState(null);
+  const [reloadWeekly, setReloadWeekly] = useState(false);
 
   const months = [
     "Ene",
@@ -40,17 +45,34 @@ const DreamingWeekly = (props) => {
     }`;
   };
 
-  const editDreaming = (id) => {
-    console.log("Pushado para editar: ", id);
+  const editDreaming = data => {
+    setModalVisibleWeek(true);
+    setRenderComponent(<EditDreaming
+      setReloadWeekly={setReloadWeekly}
+      setModalVisibleWeek={setModalVisibleWeek}
+      setBottomSheetVisible={setBottomSheetVisible}
+      setModalVisible={setModalVisible}
+      setReloadData={setReloadData}
+      data={data}
+      />);
   }
 
-  const deleteDreaming = (id) => {
-    console.log("Pushado para eliminar: ", id);
+  const deleteDreaming = (data) => {
+    setModalVisibleWeek(true);
+    setRenderComponent(<DeleteDreaming
+      setReloadWeekly={setReloadWeekly}
+      setModalVisibleWeek={setModalVisibleWeek}
+      setModalVisible={setModalVisible}
+      setReloadData={setReloadData}
+      data={data}
+      />);
   }
 
   useEffect(() => {
+    setReloadWeekly(false);
+    setReloadMonthly(true);
     setRenderData(
-      props.data.map((l, i) => {
+      data.map((l, i) => {
         let date = new Date(l.date);
         let year = date.getFullYear();
         let month = months[date.getMonth()];
@@ -68,21 +90,28 @@ const DreamingWeekly = (props) => {
             name='pencil'
             type='material-community'
             size={20}
-            onPress={()=>editDreaming(l._id)}
+            onPress={()=>editDreaming(l)}
             />
             <Icon   
             name='delete'
             type='material-community'
             size={20}
-            onPress={()=>deleteDreaming(l._id)}
+            onPress={()=>deleteDreaming(l)}
             />
           </ListItem>
         );
       })
     );
-  }, [reloadData]);
+  }, [reloadWeekly]);
 
-  return <ScrollView>{renderData}</ScrollView>;
+  return (
+    <ScrollView>
+    {renderData}
+    <Modal isVisible={modalVisibleWeek} setIsVisible={setModalVisibleWeek}>
+      {renderComponent}
+    </Modal>
+    </ScrollView>
+  );
 };
 
 export default DreamingWeekly;
