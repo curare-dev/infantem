@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Avatar } from "react-native-elements";
 
 const ProfileTop = ({ user }) => {
+  console.log("USER: ", user);
   return (
     <View style={styles.profileTopContainer}>
       <Avatar
         rounded
-        icon={{ type: "material-community", name: "account" }}
+        source={{
+          uri: user.avatarURL
+        }}
         size="xlarge"
         containerStyle={styles.avatarStyle}
       ></Avatar>

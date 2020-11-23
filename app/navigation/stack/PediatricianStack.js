@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Dimensions } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Pediatrician from "../../screen/pediatrician/Pediatrician";
 import { getColor } from "../../utils/colors";
-import { Icon } from "react-native-elements";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import Modal from "../../shared/Modal";
-import ShowAppointments from "../../components/Pediatrician/ShowAppointments";
 
 const Stack = createStackNavigator();
 
@@ -20,7 +16,7 @@ const PediatricianStack = () => {
           headerTitle: () => <Text style={styles.headerTitle}>Pediatras</Text>,
           headerStyle: {
             backgroundColor: getColor("headerBackgroundColor"),
-            height: 130,
+            height: Dimensions.get("screen").height * .14,
             elevation: 0,
             shadowColor: getColor("shadowColor"),
           },
@@ -34,7 +30,7 @@ export default PediatricianStack;
 
 const styles = StyleSheet.create({
   headerTitle: {
-    fontSize: 25,
+    fontSize: 20,
     paddingTop: 20,
     paddingLeft: 20,
     color: getColor("headerText"),

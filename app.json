@@ -31,7 +31,10 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ],
-      "package": "com.infantem.client"
+      "package": "com.infantem.client",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6280479529367536~2562826848"
+      }
     },
     "description": ""
   }

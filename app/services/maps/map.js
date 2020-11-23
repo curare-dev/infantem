@@ -1,5 +1,4 @@
 import * as Location from "expo-location";
-import * as Permissions from "expo-permissions";
 
 const APIKEY = "AIzaSyDt-bzrLkPH4l1TQLZxs0V45ktp-DPxIqE";
 
@@ -17,8 +16,9 @@ export const getLatitudeLongitude = async (address) => {
 };
 
 export const getUserLocation = async () => {
-  let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  let { status } = await Location.requestPermissionsAsync();
   if (status !== "granted") {
+    console.log("Hay un error");
     return false;
   } else {
     let location = await Location.getCurrentPositionAsync({});
@@ -36,5 +36,6 @@ export const getPlaces = async (lat, long) => {
     return json;
   } catch (error) {
     console.error("Error al Buscar Pediatras Cerca: ", error);
+    return "Error al buscar Pediatras";
   }
 };

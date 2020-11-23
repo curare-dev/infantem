@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
-import { getFeeding } from "../../../services/feeding/feeding.service";
+import { getDiapers } from "../../../services/diaper/diaper.service";
 import Modal from "../../../shared/Modal";
 import { getColor } from "../../../utils/colors";
-import FeedingWeekly from "./FeedingWeekly";
+import DiapersWeekly from "./DiapersWeekly";
 
-const FeedingMonthly = ({
-  setReloadData,
-  setBottomSheetVisible,
-}) => {
+const DiapersMonthly = ({ setReloadData, setBottomSheetVisible,}) => {
+
   const [showData, setShowData] = useState(null);
   const [type, setType] = useState({ type: "month" });
   const [error, setError] = useState("");
@@ -26,44 +24,44 @@ const FeedingMonthly = ({
   let objTwo = [];
   let objThree = [];
   let objFour = [];
-  const [totalOz, setTotalOz] = useState({
+  const [totalPee, setTotalPee] = useState({
     weekOne: "",
     weekTwo: "",
     weekThree: "",
     weekFour: "",
   });
-  const [totalMl, setTotalMl] = useState({
+  const [totalPoo, setTotalPoo] = useState({
     weekOne: "",
     weekTwo: "",
     weekThree: "",
     weekFour: "",
   });
-  const [totalBf, setTotalBf] = useState({
+  const [totalMixed, setTotalMixed] = useState({
     weekOne: "",
     weekTwo: "",
     weekThree: "",
     weekFour: "",
   });
-  
+
   useEffect(() => {
     console.log("Se recarga Monthly");
     setIsLoading(true);
-    let ozWeekOne = 0;
-    let ozWeekTwo = 0;
-    let ozWeekThree = 0;
-    let ozWeekFour = 0;
-    let mlWeekOne = 0;
-    let mlWeekTwo = 0;
-    let mlWeekThree = 0;
-    let mlWeekFour = 0;
-    let bfWeekOne = 0;
-    let bfWeekTwo = 0;
-    let bfWeekThree = 0;
-    let bfWeekFour = 0;
+    let peeWeekOne = 0;
+    let peeWeekTwo = 0;
+    let peeWeekThree = 0;
+    let peeWeekFour = 0;
+    let pooWeekOne = 0;
+    let pooWeekTwo = 0;
+    let pooWeekThree = 0;
+    let pooWeekFour = 0;
+    let mixedWeekOne = 0;
+    let mixedWeekTwo = 0;
+    let mixedWeekThree = 0;
+    let mixedWeekFour = 0;
     setReloadMonthly(false);
     setReloadData(true);
-    async function fetchFeedingByDay() {
-      getFeeding(type)
+    async function fetchDiaperByDay() {
+      getDiapers(type)
         .then((response) => {
           if (response.length === 0) {
             setError("Sube los datos de tu bebe para que se muestren aquí!");
@@ -94,41 +92,41 @@ const FeedingMonthly = ({
                   weekThree: `16 - 23 ${month} ${year}`,
                   weekFour: `24 - 31 ${month} ${year}`,
                 });
-                if (day >= 1 && day <= 7 && l.feedingType === "oz") {
-                  ozWeekOne += l.quantity;
+                if (day >= 1 && day <= 7 && l.diaperType === "pee") {
+                  peeWeekOne += l.quantity;
                   objOne.push(l);
-                } else if (day >= 8 && day <= 15 && l.feedingType === "oz") {
-                  ozWeekTwo += l.quantity;
+                } else if (day >= 8 && day <= 15 && l.diaperType === "pee") {
+                  peeWeekTwo += l.quantity;
                   objTwo.push(l);
-                } else if (day >= 16 && day <= 23 && l.feedingType === "oz") {
-                  ozWeekThree += l.quantity;
+                } else if (day >= 16 && day <= 23 && l.diaperType === "pee") {
+                  peeWeekThree += l.quantity;
                   objThree.push(l);
-                } else if (day >= 24 && day <= 31 && l.feedingType === "oz") {
-                  ozWeekFour += l.quantity;
+                } else if (day >= 24 && day <= 31 && l.diaperType === "pee") {
+                  peeWeekFour += l.quantity;
                   objFour.push(l);
-                } else if (day >= 1 && day <= 7 && l.feedingType === "ml") {
-                  mlWeekOne += l.quantity;
+                } else if (day >= 1 && day <= 7 && l.diaperType === "poo") {
+                  pooWeekOne += l.quantity;
                   objOne.push(l);
-                } else if (day >= 8 && day <= 15 && l.feedingType === "ml") {
-                  mlWeekTwo += l.quantity;
+                } else if (day >= 8 && day <= 15 && l.diaperType === "poo") {
+                  pooWeekTwo += l.quantity;
                   objTwo.push(l);
-                } else if (day >= 16 && day <= 23 && l.feedingType === "ml") {
-                  mlWeekThree += l.quantity;
+                } else if (day >= 16 && day <= 23 && l.diaperType === "poo") {
+                  pooWeekThree += l.quantity;
                   objThree.push(l);
-                } else if (day >= 24 && day <= 31 && l.feedingType === "ml") {
-                  mlWeekFour += l.quantity;
+                } else if (day >= 24 && day <= 31 && l.diaperType === "poo") {
+                  pooWeekFour += l.quantity;
                   objFour.push(l);
-                } else if (day >= 1 && day <= 7 && l.feedingType === "Secs") {
-                  bfWeekOne += l.quantity;
+                } else if (day >= 1 && day <= 7 && l.diaperType === "mixed") {
+                  mixedWeekOne += l.quantity;
                   objOne.push(l);
-                } else if (day >= 8 && day <= 15 && l.feedingType === "Secs") {
-                  bfWeekTwo += l.quantity;
+                } else if (day >= 8 && day <= 15 && l.diaperType === "mixed") {
+                  mixedWeekTwo += l.quantity;
                   objTwo.push(l);
-                } else if (day >= 16 && day <= 23 && l.feedingType === "Secs") {
-                  bfWeekThree += l.quantity;
+                } else if (day >= 16 && day <= 23 && l.diaperType === "mixed") {
+                  mixedWeekThree += l.quantity;
                   objThree.push(l);
-                } else if (day >= 24 && day <= 31 && l.feedingType === "Secs") {
-                  bfWeekFour += l.quantity;
+                } else if (day >= 24 && day <= 31 && l.diaperType === "mixed") {
+                  mixedWeekFour += l.quantity;
                   objFour.push(l);
                 }
                 day < 10 ? (day = `0${day}`) : day;
@@ -137,23 +135,23 @@ const FeedingMonthly = ({
               })
             );
           }
-          setTotalOz({
-            weekOne: ozWeekOne,
-            weekTwo: ozWeekTwo,
-            weekThree: ozWeekThree,
-            weekFour: ozWeekFour,
+          setTotalPee({
+            weekOne: peeWeekOne,
+            weekTwo: peeWeekTwo,
+            weekThree: peeWeekThree,
+            weekFour: peeWeekFour,
           });
-          setTotalMl({
-            weekOne: mlWeekOne,
-            weekTwo: mlWeekTwo,
-            weekThree: mlWeekThree,
-            weekFour: mlWeekFour,
+          setTotalPoo({
+            weekOne: pooWeekOne,
+            weekTwo: pooWeekTwo,
+            weekThree: pooWeekThree,
+            weekFour: pooWeekFour,
           });
-          setTotalBf({
-            weekOne: bfWeekOne,
-            weekTwo: bfWeekTwo,
-            weekThree: bfWeekThree,
-            weekFour: bfWeekFour,
+          setTotalMixed({
+            weekOne: mixedWeekOne,
+            weekTwo: mixedWeekTwo,
+            weekThree: mixedWeekThree,
+            weekFour: mixedWeekFour,
           });
           setWeekOneData(objOne);
           setWeekTwoData(objTwo);
@@ -162,14 +160,14 @@ const FeedingMonthly = ({
         })
         .catch((error) => console.log("Error", error));
     }
-    fetchFeedingByDay();
+    fetchDiaperByDay();
   }, [reloadMonthly]);
 
   const openList = (week) => {
     switch (week) {
       case 1:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly 
+        setRenderComponent(<DiapersWeekly 
                               data={weekOneData} 
                               setReloadMonthly={setReloadMonthly} 
                               setBottomSheetVisible={setBottomSheetVisible} 
@@ -179,7 +177,7 @@ const FeedingMonthly = ({
         break;
       case 2:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly 
+        setRenderComponent(<DiapersWeekly 
                               data={weekTwoData} 
                               setReloadMonthly={setReloadMonthly} 
                               setBottomSheetVisible={setBottomSheetVisible} 
@@ -189,7 +187,7 @@ const FeedingMonthly = ({
         break;
       case 3:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly 
+        setRenderComponent(<DiapersWeekly 
                               data={weekThreeData} 
                               setReloadMonthly={setReloadMonthly} 
                               setBottomSheetVisible={setBottomSheetVisible}
@@ -199,7 +197,7 @@ const FeedingMonthly = ({
         break;
       case 4:
         setModalVisible(true);
-        setRenderComponent(<FeedingWeekly 
+        setRenderComponent(<DiapersWeekly
                               data={weekFourData} 
                               setReloadMonthly={setReloadMonthly} 
                               setBottomSheetVisible={setBottomSheetVisible}
@@ -215,16 +213,6 @@ const FeedingMonthly = ({
     }
   };
 
-  const formatedSeconds = (secs) => {
-    let d = Number(secs);
-    const h = Math.floor(d / 3600);
-    const m = Math.floor((d % 3600) / 60);
-    const s = Math.floor((d % 3600) % 60);
-    return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-      s < 10 ? "0" + s : s
-    }`;
-  };
-
   return (
     <ScrollView>
       {isLoading ? 
@@ -235,50 +223,41 @@ const FeedingMonthly = ({
           </ListItem.Content>
         </ListItem>
       </View>
-
       :
       <View>
-        <ListItem onPress={() => openList(1)} bottomDivider>
+      <ListItem onPress={() => openList(1)} bottomDivider>
         <ListItem.Content>
-      <ListItem.Title>{textDate.weekOne}</ListItem.Title>
-          <ListItem.Subtitle>Onzas: {totalOz.weekOne}</ListItem.Subtitle>
-          <ListItem.Subtitle>Mililitros: {totalMl.weekOne}</ListItem.Subtitle>
-          <ListItem.Subtitle>
-            Leche Materna: {formatedSeconds(totalBf.weekOne)}
-          </ListItem.Subtitle>
+          <ListItem.Title>{textDate.weekOne}</ListItem.Title>
+          <ListItem.Subtitle>Pipi: {totalPee.weekOne}</ListItem.Subtitle>
+          <ListItem.Subtitle>Popo: {totalPoo.weekOne}</ListItem.Subtitle>
+          <ListItem.Subtitle>Mixto: {totalMixed.weekOne}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
       <ListItem onPress={() => openList(2)} bottomDivider>
         <ListItem.Content>
           <ListItem.Title>{textDate.weekTwo}</ListItem.Title>
-          <ListItem.Subtitle>Onzas: {totalOz.weekTwo}</ListItem.Subtitle>
-          <ListItem.Subtitle>Mililitros: {totalMl.weekTwo}</ListItem.Subtitle>
-          <ListItem.Subtitle>
-            Leche Materna: {formatedSeconds(totalBf.weekTwo)}
-          </ListItem.Subtitle>
+          <ListItem.Subtitle>Pipi: {totalPee.weekTwo}</ListItem.Subtitle>
+          <ListItem.Subtitle>Popo: {totalPoo.weekTwo}</ListItem.Subtitle>
+          <ListItem.Subtitle>Mixto: {totalMixed.weekTwo}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
       <ListItem onPress={() => openList(3)} bottomDivider>
         <ListItem.Content>
           <ListItem.Title>{textDate.weekThree}</ListItem.Title>
-          <ListItem.Subtitle>Onzas: {totalOz.weekThree}</ListItem.Subtitle>
-          <ListItem.Subtitle>Mililitros: {totalMl.weekThree}</ListItem.Subtitle>
-          <ListItem.Subtitle>
-            Leche Materna: {formatedSeconds(totalBf.weekThree)}
-          </ListItem.Subtitle>
+          <ListItem.Subtitle>Pipi: {totalPee.weekThree}</ListItem.Subtitle>
+          <ListItem.Subtitle>Popo: {totalPoo.weekThree}</ListItem.Subtitle>
+          <ListItem.Subtitle>Mixto: {totalMixed.weekThree}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
       <ListItem onPress={() => openList(4)} bottomDivider>
         <ListItem.Content>
           <ListItem.Title>{textDate.weekFour}</ListItem.Title>
-          <ListItem.Subtitle>Onzas: {totalOz.weekFour}</ListItem.Subtitle>
-          <ListItem.Subtitle>Mililitros: {totalMl.weekFour}</ListItem.Subtitle>
-          <ListItem.Subtitle>
-            Leche Materna: {formatedSeconds(totalBf.weekFour)}
-          </ListItem.Subtitle>
+          <ListItem.Subtitle>Pipi: {totalPee.weekFour}</ListItem.Subtitle>
+          <ListItem.Subtitle>Popo: {totalPoo.weekFour}</ListItem.Subtitle>
+          <ListItem.Subtitle>Mixto: {totalMixed.weekFour}</ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
@@ -296,7 +275,7 @@ const FeedingMonthly = ({
   );
 };
 
-export default FeedingMonthly;
+export default DiapersMonthly;
 
 const styles = StyleSheet.create({
   closeBottomSheet: {

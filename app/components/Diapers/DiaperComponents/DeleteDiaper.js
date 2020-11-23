@@ -1,18 +1,16 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-elements'
-import { deleteDreaming } from '../../../services/dreaming/dreaming.service'
+import { deleteDiaper } from '../../../services/diaper/diaper.service'
 import { getColor } from '../../../utils/colors'
 
-const DeleteDreaming = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData}) => {
-    console.log(data);
+const DeleteDiaper = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData}) => {
     const submitDelete = async () => {
-        await deleteDreaming(data._id).then( response => {
-            console.log(response);
+        await deleteDiaper(data._id).then( response => {
             setReloadWeekly(true);
-            setModalVisibleWeek(false);
-            setModalVisible(false);
-            setReloadData(true);
+                setModalVisibleWeek(false);
+                setModalVisible(false);
+                setReloadData(true);
         } ).catch( error => {
             setReloadData(true);
             console.log("Error al eliminar");
@@ -26,7 +24,7 @@ const DeleteDreaming = ({setReloadWeekly, setModalVisible, data, setModalVisible
     )
 }
 
-export default DeleteDreaming
+export default DeleteDiaper
 
 const styles = StyleSheet.create({
     buttonStyle: {

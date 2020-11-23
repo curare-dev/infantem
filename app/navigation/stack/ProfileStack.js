@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Profile from "../../screen/profile/Profile";
 import { getColor } from "../../utils/colors";
@@ -24,7 +24,7 @@ const ProfileStack = ({ setLogin, user, setReloadProfileInfo }) => {
           ),
           headerStyle: {
             backgroundColor: getColor("headerBackgroundColor"),
-            height: 130,
+            height: Dimensions.get("screen").height * .14,
             elevation: 0,
             shadowColor: "transparent",
           },
@@ -38,7 +38,7 @@ export default ProfileStack;
 
 const styles = StyleSheet.create({
   headerTitle: {
-    fontSize: 25,
+    fontSize: 20,
     paddingTop: 20,
     paddingLeft: 20,
     color: getColor("headerText"),

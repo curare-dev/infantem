@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, ScrollView, Dimensions } from "react-native";
 import { getColor } from "../../utils/colors";
 import ProfileTop from "../../components/Profile/ProfileTop";
 import ProfileOptions from "../../components/Profile/ProfileOptions";
 
 const Profile = ({ setLogin, user, setReloadProfileInfo }) => {
+  const [reloadImage, setReloadImage] = useState(false);
   return (
     <ScrollView contentContainerStyle={styles.profileContainer}>
       <ProfileTop user={user} />

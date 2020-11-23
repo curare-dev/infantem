@@ -4,7 +4,11 @@ import { getColor } from "../../utils/colors";
 import { Text, Button, Divider, Overlay } from "react-native-elements";
 import Appointment from "./Appointment";
 import MapView, { Marker } from "react-native-maps";
-
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 const PediatricianPage = ({ pediatrician }) => {
   let { uuid, name, ubicacion, coordinates } = pediatrician;
   const [visible, setVisible] = useState(false);
@@ -65,6 +69,13 @@ const PediatricianPage = ({ pediatrician }) => {
       >
         <Appointment setVisible={setVisible} />
       </Overlay>
+      <AdMobBanner
+          bannerSize="mediumRectangle"
+          adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+          servePersonalizedAds // true or false
+          onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
+          style={styles.ad}
+      />
     </View>
   );
 };
@@ -101,4 +112,7 @@ const styles = StyleSheet.create({
     height: 250,
     margin: "5%",
   },
+  ad: {
+    marginTop: "3%",
+  }
 });

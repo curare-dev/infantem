@@ -29,6 +29,7 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
           } else setError("Error en el sistema");
         })
         .catch((error) => {
+          console.log(error);
           setError("Error en el sistema, Catch");
       });
     }

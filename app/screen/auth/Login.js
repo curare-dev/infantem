@@ -24,6 +24,7 @@ const Login = ({ setLogin }) => {
         .then((response) => {
           if (response === 2 || response === 1) {
             setError("Usuario o Contraseña Incorrecta");
+            setIsLoading(false);
           } else {
             setLogin(true);
             setIsLoading(false);

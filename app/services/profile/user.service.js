@@ -17,6 +17,7 @@ export const getUserById = async () => {
 };
 
 export const updateUserById = async (obj) => {
+  console.log("OBJ: ", obj);
   try {
     let userid = await SecureStore.getItemAsync("id");
     userid = userid.slice(1, -1);

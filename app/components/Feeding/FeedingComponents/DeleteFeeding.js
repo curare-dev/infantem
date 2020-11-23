@@ -5,7 +5,6 @@ import { deleteFeeding } from '../../../services/feeding/feeding.service'
 import { getColor } from '../../../utils/colors'
 
 const DeleteFeeding = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData}) => {
-    console.log(data);
     const submitDelete = async () => {
         await deleteFeeding(data._id).then( response => {
             setReloadWeekly(true);

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ListItem } from "react-native-elements";
-import { getDreaming } from "../../services/dreaming/dreaming.service";
-import { getColor } from "../../utils/colors";
+import { getDiapers } from "../../../services/diaper/diaper.service";
+import { getColor } from "../../../utils/colors";
 
-const DreamingDiary = ({ reloadData, setReloadData }) => {
-  
+const DiapersDiary = ({ reloadData, setReloadData }) => {
   const [showData, setShowData] = useState(null);
   const [type, setType] = useState({ type: "day" });
   const [error, setError] = useState("");
@@ -36,26 +35,20 @@ const DreamingDiary = ({ reloadData, setReloadData }) => {
   ];
 
   const formatTitle = (type, quantity) => {
-    if (type === "oz") {
-      return `${quantity} Onzas`;
-    } else if (type === "ml") {
-      return `${quantity} Mililitros`;
-    } else if (type === "Secs") {
-      let d = Number(quantity);
-      const h = Math.floor(d / 3600);
-      const m = Math.floor((d % 3600) / 60);
-      const s = Math.floor((d % 3600) % 60);
-      return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-        s < 10 ? "0" + s : s
-      }`;
+    if (type === "pee") {
+      return `${quantity} de Pipi`;
+    } else if (type === "poo") {
+      return `${quantity} de Popo`;
+    } else if (type === "mixed") {
+      return `${quantity} Mixto`
     }
   };
 
   useEffect(() => {
     setIsLoading(true);
-    async function fetchDreamingByDay() {
+    async function fetchDiaperByDay() {
       setReloadData(false);
-      getDreaming(type)
+      getDiapers(type)
         .then((response) => {
           if (response.length === 0) {
             setError("Sube los datos de tu bebe para que se muestren aquí!");
@@ -69,13 +62,14 @@ const DreamingDiary = ({ reloadData, setReloadData }) => {
                 let day = date.getDate();
                 let dayName = days[date.getDay()];
                 setIsLoading(false);
+                console.log(l);
                 return (
                   <ListItem
                     key={i}
                     containerStyle={styles.listItemContainerStyle}
                   >
                     <ListItem.Content>
-                      <ListItem.Title>{formatTitle(l.dreamingType, l.quantity)}</ListItem.Title>
+                      <ListItem.Title>{formatTitle(l.diaperType, l.quantity)}</ListItem.Title>
                       <ListItem.Subtitle>{`${dayName} ${day} de ${month} ${year}`}</ListItem.Subtitle>
                     </ListItem.Content>
                   </ListItem>
@@ -89,7 +83,7 @@ const DreamingDiary = ({ reloadData, setReloadData }) => {
           console.log("Error", error);
         });
     }
-    fetchDreamingByDay();
+    fetchDiaperByDay();
   }, [reloadData]);
 
   return (
@@ -102,7 +96,7 @@ const DreamingDiary = ({ reloadData, setReloadData }) => {
   );
 };
 
-export default DreamingDiary;
+export default DiapersDiary;
 
 const styles = StyleSheet.create({
   listItemContainerStyle: {

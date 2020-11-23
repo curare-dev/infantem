@@ -18,6 +18,11 @@ import {
   postDreaming,
 } from "../../services/dreaming/dreaming.service";
 import { validateEmptyForm } from "../../utils/validations";
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 
 const Dreamings = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -31,6 +36,15 @@ const Dreamings = () => {
   const [reloadData, setReloadData] = useState(false);
   const [todayDataSecs, setTodayDataSecs] = useState(null);
   const [monthlyDataSecs, setMonthlyDataSecs] = useState(null);
+  const [countAd, setCountAd] = useState(0);
+
+  const showAd = async () => {
+    await setTestDeviceIDAsync('EMULATOR');
+    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
+    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
+    await AdMobInterstitial.showAdAsync();
+    setCountAd(0);
+  }
 
   const getComponent = (component) => {
     switch (component) {
@@ -43,12 +57,12 @@ const Dreamings = () => {
         );
         break;
       case "day":
-        setRenderComponent(<DreamingDiary setIsVisible={setIsVisible} />);
+        setRenderComponent(<DreamingDiary setIsVisible={setIsVisible} setReloadData={setReloadData}
+          />);
         break;
       case "month":
         setRenderComponent(
           <DreamingMonthly
-            reloadData={reloadData}
             setReloadData={setReloadData}
             setBottomSheetVisible={setBottomSheetVisible}
           />
@@ -58,7 +72,11 @@ const Dreamings = () => {
   };
 
   useEffect(() => {
+    setCountAd(countAd + 1);
     setReloadData(false);
+    if(countAd === 3){
+      showAd();
+    }
     const getDataDreaming = async () => {
       getTotalDreaming("day")
         .then((response) => {
@@ -118,6 +136,7 @@ const Dreamings = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.containerDreamingDiary}>
+      <View style={styles.viewContainer}>
       <Timer
         setTime={setTime}
         resetTimer={resetTimer}
@@ -175,6 +194,8 @@ const Dreamings = () => {
           </View>
         </TouchableOpacity>
       </View>
+      </View>
+      <View style={styles.bottom}>
       <BottomSheet
         isVisible={bottomSheetVisible}
         setIsVisible={setBottomSheetVisible}
@@ -184,6 +205,13 @@ const Dreamings = () => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
+      <AdMobBanner
+        adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+        servePersonalizedAds // true or false
+        onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
+        style={styles.ad}
+      />
+      </View>
     </ScrollView>
   );
 };
@@ -194,7 +222,13 @@ const styles = StyleSheet.create({
   containerDreamingDiary: {
     backgroundColor: getColor("backgroundColor"),
     flexGrow: 1,
-    padding: "10%",
+  },
+  bottom:{
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  viewContainer: {
+    padding: "5%"
   },
   textRight: {
     alignSelf: "flex-end",

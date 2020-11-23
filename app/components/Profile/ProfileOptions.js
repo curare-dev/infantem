@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Share } from "react-native";
 import { getColor } from "../../utils/colors";
 import { BottomSheet, Button, Icon, ListItem } from "react-native-elements";
 import Modal from "../../shared/Modal";
@@ -12,6 +12,9 @@ import ShareApp from "../../shared/ShareApp";
 import UpgradeApp from "../../shared/UpgradeApp";
 import LogOut from "../Session/LogOut";
 import * as SecureStore from "expo-secure-store";
+import * as ImagePicker from 'expo-image-picker';
+import {downloadImageOnS3, uploadImageOnS3} from "../../services/profile/image.service";
+import { updateUserById } from "../../services/profile/user.service";
 
 const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,6 +22,43 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
   const [renderComponent, setRenderComponent] = useState(null);
   const [subject, setSubject] = useState("Seleccionar unidad de medida");
   const [visible, setVisible] = useState(false);
+  const [image, setImage] = useState(null);
+
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      await uploadImageOnS3({
+        uri: result.uri,
+        name: "image-test",
+        type: "image/jpeg"
+      });
+      downloadImageOnS3().then( response => {
+        console.log("RESPONSE: ", response );
+          updateUserById({avatarURL: response});
+          setReloadProfileInfo(true);
+      }).catch( error => {
+        "ERROR: ", error
+      });
+    }
+  };
+
   const list = [
     {
       title: "Onzas",
@@ -85,6 +125,25 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
     }
   };
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: 'Infantem, la aplicación que necesitas para tu bebé',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <View>
       <View style={styles.optionsStyle}>
@@ -140,10 +199,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
-          onPress={() => {
-            getComponent("avatar");
-            toggleModal();
-          }}
+          onPress={pickImage}
         >
           <Text style={styles.title}>Cambiar Avatar</Text>
           <Icon
@@ -167,10 +223,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.touchableStyle}
-          onPress={() => {
-            getComponent("shareApp");
-            toggleModal();
-          }}
+          onPress={onShare}
         >
           <Text style={styles.title}>Compartir Aplicación</Text>
           <Icon
@@ -181,15 +234,11 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.touchableStyle, styles.versionButton]}
-          onPress={() => {
-            getComponent("upgradeApp");
-            toggleModal();
-          }}
         >
           <Text style={styles.title}>Versión: Gratuita</Text>
           <Text style={[styles.upgradeText]}>
             {user.suscription === "free"
-              ? "Gratis"
+              ? "Gratuita"
               : user.suscription === "intermediate"
               ? "Intermedia"
               : user.suscription === "premium" && "Premium"}

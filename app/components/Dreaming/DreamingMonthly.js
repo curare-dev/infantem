@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
 import { getDreaming } from "../../services/dreaming/dreaming.service";
 import Modal from "../../shared/Modal";
@@ -7,7 +7,6 @@ import { getColor } from "../../utils/colors";
 import DreamingWeekly from "./DreamingComponents/DreamingWeekly";
 
 const DreamingMonthly = ({
-  reloadData,
   setReloadData,
   setBottomSheetVisible,
 }) => {
@@ -21,6 +20,9 @@ const DreamingMonthly = ({
   const [weekThreeData, setWeekThreeData] = useState(null);
   const [weekFourData, setWeekFourData] = useState(null);
   const [reloadMonthly, setReloadMonthly] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [textDate, setTextDate] = useState({});
+
   let objOne = [];
   let objTwo = [];
   let objThree = [];
@@ -36,6 +38,7 @@ const DreamingMonthly = ({
     let drWeekTwo = 0;
     let drWeekThree = 0;
     let drWeekFour = 0;
+    setIsLoading(true);
     async function fetchDreamingByDay() {
       setReloadMonthly(false);
       setReloadData(false);
@@ -46,10 +49,30 @@ const DreamingMonthly = ({
           } else {
             setShowData(
               response.map((l, i) => {
+                const months = [
+                  "Enero",
+                  "Febrero",
+                  "Marzo",
+                  "Abril",
+                  "Mayo",
+                  "Junio",
+                  "Julio",
+                  "Agosto",
+                  "Septiembre",
+                  "Octubre",
+                  "Noviembre",
+                  "Diciembre",
+                ];
                 let date = new Date(l.date);
                 let year = date.getFullYear();
-                let month = date.getMonth() + 1;
+                let month = months[date.getMonth()];
                 let day = date.getDate();
+                setTextDate({
+                  weekOne: `1 - 7 ${month} ${year}`,
+                  weekTwo: `8 - 15 ${month} ${year}`,
+                  weekThree: `16 - 23 ${month} ${year}`,
+                  weekFour: `24 - 31 ${month} ${year}`,
+                });
                 if (day >= 1 && day <= 7 && l.dreamingType === "Secs") {
                   drWeekOne += l.quantity;
                   objOne.push(
@@ -75,6 +98,7 @@ const DreamingMonthly = ({
                 }
                 day < 10 ? (day = `0${day}`) : day;
                 month < 10 ? (month = `0${month}`) : month;
+                setIsLoading(false);
               })
             );
           }
@@ -156,9 +180,19 @@ const DreamingMonthly = ({
 
   return (
     <ScrollView>
+      {isLoading ? 
+      <View>
+        <ListItem>
+          <ListItem.Content style={styles.activityIndicator}>
+            <ActivityIndicator size="large" color={getColor("backgroundColor")} /> 
+          </ListItem.Content>
+        </ListItem>
+      </View>
+      :
+      <View>
       <ListItem onPress={() => openList(1)} bottomDivider>
         <ListItem.Content>
-          <ListItem.Title>Semana 1</ListItem.Title>
+          <ListItem.Title>{textDate.weekOne}</ListItem.Title>
           <ListItem.Subtitle>
             Horas de Sueño: {formatedSeconds(totalDreaming.weekOne)}
           </ListItem.Subtitle>
@@ -167,7 +201,7 @@ const DreamingMonthly = ({
       </ListItem>
       <ListItem onPress={() => openList(2)} bottomDivider>
         <ListItem.Content>
-          <ListItem.Title>Semana 2</ListItem.Title>
+          <ListItem.Title>{textDate.weekTwo}</ListItem.Title>
           <ListItem.Subtitle>
             Horas de Sueño: {formatedSeconds(totalDreaming.weekTwo)}
           </ListItem.Subtitle>
@@ -176,7 +210,7 @@ const DreamingMonthly = ({
       </ListItem>
       <ListItem onPress={() => openList(3)} bottomDivider>
         <ListItem.Content>
-          <ListItem.Title>Semana 3</ListItem.Title>
+          <ListItem.Title>{textDate.weekThree}</ListItem.Title>
           <ListItem.Subtitle>
             Horas de Sueño: {formatedSeconds(totalDreaming.weekThree)}
           </ListItem.Subtitle>
@@ -185,13 +219,15 @@ const DreamingMonthly = ({
       </ListItem>
       <ListItem onPress={() => openList(4)} bottomDivider>
         <ListItem.Content>
-          <ListItem.Title>Semana 4</ListItem.Title>
+          <ListItem.Title>{textDate.weekFour}</ListItem.Title>
           <ListItem.Subtitle>
             Horas de Sueño: {formatedSeconds(totalDreaming.weekFour)}
           </ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Chevron />
       </ListItem>
+      </View>
+      }
       <Button
         buttonStyle={styles.closeBottomSheet}
         title="Cerrar"
@@ -210,4 +246,8 @@ const styles = StyleSheet.create({
   closeBottomSheet: {
     backgroundColor: getColor("buttonColor"),
   },
+  activityIndicator: {
+    height: 225,
+    alignItems: "center"
+  }
 });

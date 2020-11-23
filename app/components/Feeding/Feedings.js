@@ -9,6 +9,11 @@ import { getTotalFeeding } from "../../services/feeding/feeding.service";
 import Modal from "../../shared/Modal";
 import FeedingDiary from "./FeedingComponents/FeedingDiary";
 import FeedingMonthly from "./FeedingComponents/FeedingMonthly";
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 
 const Feedings = ({ user }) => {
   const [reloadData, setReloadData] = useState(false);
@@ -16,20 +21,27 @@ const Feedings = ({ user }) => {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const toggleModal = () => setIsVisible(true);
   const toggleBottomSheet = () => setBottomSheetVisible(true);
-
   const [todayDataOz, setTodayDataOz] = useState(null);
   const [todayDataMl, setTodayDataMl] = useState(null);
   const [todayDataSecs, setTodayDataSecs] = useState(null);
   const [monthlyDataOz, setMonthlyDataOz] = useState(null);
   const [monthlyDataMl, setMonthlyDataMl] = useState(null);
   const [monthlyDataSecs, setMonthlyDataSecs] = useState(null);
-
   const [renderComponent, setRenderComponent] = useState(null);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const [countAd, setCountAd] = useState(0);
 
+  const showAd = async () => {
+    await setTestDeviceIDAsync('EMULATOR');
+    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
+    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
+    await AdMobInterstitial.showAdAsync();
+    setCountAd(0);
+  }
 
   useEffect(() => {
+    setCountAd(countAd + 1);
     setTodayDataOz(null); 
     setTodayDataMl(null);
     setTodayDataSecs(null); 
@@ -37,6 +49,9 @@ const Feedings = ({ user }) => {
     setMonthlyDataMl(null);
     setMonthlyDataSecs(null);
     setReloadData(false);
+    if(countAd === 3){
+      showAd();
+    }
     async function getTotalData() {
       getTotalFeeding("day")
         .then((response) => {
@@ -45,8 +60,6 @@ const Feedings = ({ user }) => {
             const h = Math.floor(d / 3600);
             const m = Math.floor((d % 3600) / 60);
             const s = Math.floor((d % 3600) % 60);
-            console.log("Se recarga Feedings");
-            console.log("L: ", l);
             if (l._id === "oz") {
               setTodayDataOz(l.total);
             }
@@ -66,7 +79,6 @@ const Feedings = ({ user }) => {
       getTotalFeeding("month")
         .then((response) => {
           response.map((l, i) => {
-            console.log("M: ", l);
             if (l._id === "oz") {
               setMonthlyDataOz(l.total);
             }
@@ -114,6 +126,7 @@ const Feedings = ({ user }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.containerFeedingDiary}>
+      <View style={styles.viewContainer}>
       <View style={styles.viewSwitch}>
         <Text>Fórmula Láctea</Text>
         <Switch
@@ -189,6 +202,8 @@ const Feedings = ({ user }) => {
           </View>
         </TouchableOpacity>
       </View>
+      </View>
+      <View style={styles.bottom}>
       <BottomSheet
         isVisible={bottomSheetVisible}
         setIsVisible={setBottomSheetVisible}
@@ -198,7 +213,15 @@ const Feedings = ({ user }) => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
+      <AdMobBanner
+        adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+        servePersonalizedAds // true or false
+        onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
+        style={styles.ad}
+      />
+      </View>
     </ScrollView>
+
   );
 };
 
@@ -229,7 +252,13 @@ const styles = StyleSheet.create({
   containerFeedingDiary: {
     flexGrow: 1,
     backgroundColor: getColor("backgroundColor"),
-    padding: "5%",
+  },
+  bottom:{
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  viewContainer: {
+    padding: "5%"
   },
   textBottom: {
     alignSelf: "center",

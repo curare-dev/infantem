@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { updatePassword } from "../../../services/profile/user.service";
+import { getColor } from "../../../utils/colors";
 import { validateEmptyForm } from "../../../utils/validations";
 
 const ChangePassword = ({ setIsVisible, setReloadProfileInfo }) => {
@@ -92,7 +93,11 @@ const ChangePassword = ({ setIsVisible, setReloadProfileInfo }) => {
         errorMessage={error}
         value={formData.confirmNewPassword}
       />
-      <Button title="Actualizar Contraseña" onPress={changePassword} />
+      <Button       
+      containerStyle={styles.buttonContainer}
+      buttonStyle={styles.buttonStyle}  
+      title="Actualizar Contraseña" 
+      onPress={changePassword} />
     </View>
   );
 };
@@ -118,5 +123,12 @@ const styles = StyleSheet.create({
   },
   rightIcon: {
     opacity: 0.3,
+  },
+  buttonContainer: {
+    alignSelf: "center",
+    width: "90%",
+  },
+  buttonStyle: {
+    backgroundColor: getColor("buttonColor"),
   },
 });

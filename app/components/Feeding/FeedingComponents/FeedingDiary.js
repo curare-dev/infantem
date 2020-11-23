@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
+import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
+import { ListItem } from "react-native-elements";
 import { getFeeding } from "../../../services/feeding/feeding.service";
 import { getColor } from "../../../utils/colors";
 

@@ -14,8 +14,13 @@ import {
 } from "../../services/diaper/diaper.service";
 import Modal from "../../shared/Modal";
 import { getColor } from "../../utils/colors";
-import DiapersDiary from "./DiapersDiary";
-import DiapersMonthly from "./DiapersMonthly";
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
+import DiapersMonthly from "./DiaperComponents/DiapersMonthly";
+import DiapersDiary from "./DiaperComponents/DiapersDiary";
 
 const Diapers = () => {
   const [countDiaper, setCountDiaper] = useState(0);
@@ -33,14 +38,19 @@ const Diapers = () => {
   const [peeMonth, setPeeMonth] = useState("");
   const [pooMonth, setPooMonth] = useState("");
   const [mixedMonth, setMixedMonth] = useState("");
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const toggleBottomSheet = () => setBottomSheetVisible(!bottomSheetVisible);
 
   const getComponent = (component) => {
     switch (component) {
       case "day":
-        setRenderComponent(<DiapersDiary setIsVisible={setIsVisible} />);
+        setRenderComponent(<DiapersDiary setIsVisible={setIsVisible} setReloadData={setReloadData} />);
         break;
       case "month":
-        setRenderComponent(<DiapersMonthly setIsVisible={setIsVisible} />);
+        setRenderComponent(<DiapersMonthly 
+            setReloadData={setReloadData}
+            setBottomSheetVisible={setBottomSheetVisible} 
+          />);
         break;
     }
   };
@@ -131,6 +141,7 @@ const Diapers = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.diaperContainer}>
+      <View>
       <TouchableOpacity
         style={styles.touchableStyle}
         onPress={toggleBottonSheet}
@@ -210,7 +221,7 @@ const Diapers = () => {
           style={styles.touchableStyle}
           onPress={() => {
             getComponent("month");
-            toggleModal();
+            toggleBottomSheet();
           }}
         >
           <Text style={[styles.subtitle, styles.headerDate]}>Mes</Text>
@@ -244,6 +255,8 @@ const Diapers = () => {
           ) : null}
         </TouchableOpacity>
       </View>
+      </View>
+      <View style={styles.bottom}>
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
@@ -266,6 +279,19 @@ const Diapers = () => {
           );
         })}
       </BottomSheet>
+      <BottomSheet
+        isVisible={bottomSheetVisible}
+        setIsVisible={setBottomSheetVisible}
+      >
+        {renderComponent}
+      </BottomSheet>
+      <AdMobBanner
+          adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
+          servePersonalizedAds // true or false
+          onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
+          style={styles.ad}
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -305,6 +331,10 @@ const styles = StyleSheet.create({
   diaperContainer: {
     flexGrow: 1,
     backgroundColor: getColor("backgroundColor"),
+  },
+  bottom: {
+    flex: 1,
+    justifyContent: 'flex-end',
   },
   countDiapersColumn: {
     flexDirection: "column",
