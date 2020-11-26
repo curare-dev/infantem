@@ -10,8 +10,8 @@ import Timer from "../../shared/Timer";
 import { getColor } from "../../utils/colors";
 import DreamingDiaryManual from "./DreamingComponents/DreamingDiaryManual";
 import Modal from "../../shared/Modal";
-import DreamingDiary from "./DreamingDiary";
-import DreamingMonthly from "./DreamingMonthly";
+import DreamingDiary from "./DreamingComponents/DreamingDiary";
+import DreamingMonthly from "./DreamingComponents/DreamingMonthly";
 import { BottomSheet, Button, Divider } from "react-native-elements";
 import {
   getTotalDreaming,

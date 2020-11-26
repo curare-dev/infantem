@@ -63,7 +63,7 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
       </View>
       <Text style={styles.errorStyle}>{error}</Text>
       <Button
-        title="Ingresar Alimentación"
+        title="Ingresar Sueño"
         onPress={submitDreamingManual}
         buttonStyle={styles.buttonStyle}
       />

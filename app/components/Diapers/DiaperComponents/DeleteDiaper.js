@@ -1,19 +1,23 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import { Button } from 'react-native-elements'
 import { deleteDiaper } from '../../../services/diaper/diaper.service'
 import { getColor } from '../../../utils/colors'
 
-const DeleteDiaper = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData}) => {
+const DeleteDiaper = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData, setReloadMonthly}) => {
     const submitDelete = async () => {
         await deleteDiaper(data._id).then( response => {
+            Alert.alert("Exitoso!", "Se eliminó el registro");
+            console.log("RESPONSE DELETE DREAMING: ", response);
             setReloadWeekly(true);
-                setModalVisibleWeek(false);
-                setModalVisible(false);
-                setReloadData(true);
-        } ).catch( error => {
+            setReloadMonthly(true);
+            setModalVisibleWeek(false);
+            setModalVisible(false);
             setReloadData(true);
-            console.log("Error al eliminar");
+        } ).catch( error => {
+            console.log("ERROR EN DELETE FEEDING: ", error);
+            setReloadData(true);
+            Alert.alert("Alerta!", "Error al Eliminar");
         });
     }
     return (

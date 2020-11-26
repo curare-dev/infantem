@@ -5,7 +5,7 @@ import { updateFeeding } from '../../../services/feeding/feeding.service';
 import { getColor } from '../../../utils/colors';
 
 
-const EditFeeding = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData}) => {
+const EditFeeding = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData, setReloadMonthly}) => {
     const [formData, setFormData] = useState(data);
     let [mins, setMins] = useState(null);
     let [hrs, setHrs] = useState(null);
@@ -23,6 +23,7 @@ const EditFeeding = ({setReloadWeekly, setModalVisible, data, setModalVisibleWee
         updateFeeding(formData).then( response => {
             if(response){
                 setReloadWeekly(true);
+                setReloadMonthly(true);
                 setModalVisibleWeek(false);
                 setModalVisible(false);
                 setReloadData(true);

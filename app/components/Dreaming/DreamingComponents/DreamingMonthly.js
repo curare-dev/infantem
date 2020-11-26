@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
-import { getDreaming } from "../../services/dreaming/dreaming.service";
-import Modal from "../../shared/Modal";
-import { getColor } from "../../utils/colors";
-import DreamingWeekly from "./DreamingComponents/DreamingWeekly";
+import { getDreaming } from "../../../services/dreaming/dreaming.service";
+import Modal from "../../../shared/Modal";
+import { getColor } from "../../../utils/colors";
+import DreamingWeekly from "./DreamingWeekly";
 
 const DreamingMonthly = ({
   setReloadData,
@@ -20,7 +20,7 @@ const DreamingMonthly = ({
   const [weekThreeData, setWeekThreeData] = useState(null);
   const [weekFourData, setWeekFourData] = useState(null);
   const [reloadMonthly, setReloadMonthly] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [textDate, setTextDate] = useState({});
 
   let objOne = [];
@@ -38,10 +38,8 @@ const DreamingMonthly = ({
     let drWeekTwo = 0;
     let drWeekThree = 0;
     let drWeekFour = 0;
-    setIsLoading(true);
     async function fetchDreamingByDay() {
       setReloadMonthly(false);
-      setReloadData(false);
       getDreaming(type)
         .then((response) => {
           if (response.length === 0) {

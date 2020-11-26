@@ -56,6 +56,7 @@ const FeedingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
     setRenderComponent(
       <EditFeeding
         setReloadWeekly={setReloadWeekly}
+        setReloadMonthly={setReloadMonthly}
         setModalVisibleWeek={setModalVisibleWeek}
         setBottomSheetVisible={setBottomSheetVisible}
         setModalVisible={setModalVisible}
@@ -69,6 +70,7 @@ const FeedingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
     setModalVisibleWeek(true);
     setRenderComponent(
       <DeleteFeeding
+        setReloadMonthly={setReloadMonthly}
         setReloadWeekly={setReloadWeekly}
         setModalVisibleWeek={setModalVisibleWeek}
         setModalVisible={setModalVisible}
@@ -81,7 +83,6 @@ const FeedingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
   useEffect(() => {
     console.log("Se recarga Weekly");
     setReloadWeekly(false);
-    setReloadMonthly(true);
     setRenderData(
       data.map((l, i) => {
         let date = new Date(l.date);

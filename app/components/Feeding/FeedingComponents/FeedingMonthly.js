@@ -20,7 +20,7 @@ const FeedingMonthly = ({
   const [weekThreeData, setWeekThreeData] = useState(null);
   const [weekFourData, setWeekFourData] = useState(null);
   const [reloadMonthly, setReloadMonthly] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [textDate, setTextDate] = useState({});
   let objOne = [];
   let objTwo = [];
@@ -47,7 +47,6 @@ const FeedingMonthly = ({
   
   useEffect(() => {
     console.log("Se recarga Monthly");
-    setIsLoading(true);
     let ozWeekOne = 0;
     let ozWeekTwo = 0;
     let ozWeekThree = 0;
@@ -61,7 +60,6 @@ const FeedingMonthly = ({
     let bfWeekThree = 0;
     let bfWeekFour = 0;
     setReloadMonthly(false);
-    setReloadData(true);
     async function fetchFeedingByDay() {
       getFeeding(type)
         .then((response) => {

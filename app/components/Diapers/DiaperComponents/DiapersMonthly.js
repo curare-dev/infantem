@@ -18,7 +18,7 @@ const DiapersMonthly = ({ setReloadData, setBottomSheetVisible,}) => {
   const [weekThreeData, setWeekThreeData] = useState(null);
   const [weekFourData, setWeekFourData] = useState(null);
   const [reloadMonthly, setReloadMonthly] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [textDate, setTextDate] = useState({});
   let objOne = [];
   let objTwo = [];
@@ -45,7 +45,6 @@ const DiapersMonthly = ({ setReloadData, setBottomSheetVisible,}) => {
 
   useEffect(() => {
     console.log("Se recarga Monthly");
-    setIsLoading(true);
     let peeWeekOne = 0;
     let peeWeekTwo = 0;
     let peeWeekThree = 0;
@@ -59,7 +58,6 @@ const DiapersMonthly = ({ setReloadData, setBottomSheetVisible,}) => {
     let mixedWeekThree = 0;
     let mixedWeekFour = 0;
     setReloadMonthly(false);
-    setReloadData(true);
     async function fetchDiaperByDay() {
       getDiapers(type)
         .then((response) => {

@@ -19,6 +19,7 @@ const EditDiaper = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek
         } 
         updateDiaper(formData).then( response => {
             if(response){
+                setReloadMonthly(true);
                 setReloadWeekly(true);
                 setModalVisibleWeek(false);
                 setModalVisible(false);
@@ -38,7 +39,8 @@ const EditDiaper = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek
                 keyboardType="numeric"
                 onChange={(e) => {
                     setFormData({ ...formData, quantity: e.nativeEvent.text });
-                }}                     
+                }}
+                containerStyle={{width: "50%", alignSelf: "center"}}                
                 errorStyle={styles.errorStyle}
                 errorMessage={error}
             /> 

@@ -48,6 +48,7 @@ const DreamingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModa
   const editDreaming = data => {
     setModalVisibleWeek(true);
     setRenderComponent(<EditDreaming
+      setReloadMonthly={setReloadMonthly}
       setReloadWeekly={setReloadWeekly}
       setModalVisibleWeek={setModalVisibleWeek}
       setBottomSheetVisible={setBottomSheetVisible}
@@ -60,6 +61,7 @@ const DreamingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModa
   const deleteDreaming = (data) => {
     setModalVisibleWeek(true);
     setRenderComponent(<DeleteDreaming
+      setReloadMonthly={setReloadMonthly}
       setReloadWeekly={setReloadWeekly}
       setModalVisibleWeek={setModalVisibleWeek}
       setModalVisible={setModalVisible}
@@ -70,7 +72,6 @@ const DreamingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModa
 
   useEffect(() => {
     setReloadWeekly(false);
-    setReloadMonthly(true);
     setRenderData(
       data.map((l, i) => {
         let date = new Date(l.date);

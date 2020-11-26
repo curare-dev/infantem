@@ -4,7 +4,7 @@ import { Button, Input } from 'react-native-elements';
 import { updateDreaming } from '../../../services/dreaming/dreaming.service';
 import { getColor } from '../../../utils/colors';
 
-const EditDreaming = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData}) => {
+const EditDreaming = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData, setReloadMonthly}) => {
     const [formData, setFormData] = useState(data);
     let [mins, setMins] = useState(null);
     let [hrs, setHrs] = useState(null);
@@ -18,6 +18,7 @@ const EditDreaming = ({setReloadWeekly, setModalVisible, data, setModalVisibleWe
         } 
         updateDreaming(formData).then( response => {
             if(response){
+                setReloadMonthly(true);
                 setReloadWeekly(true);
                 setModalVisibleWeek(false);
                 setModalVisible(false);

@@ -19,8 +19,8 @@ const FormulaFeeding = ({ setReloadData, user }) => {
       return `00:00:00`;
     } else {
       let ampm = "am";
-      let mins = formData.date.getMinutes();
-      let hrs = formData.date.getHours();
+      let mins = receivedDate.getMinutes();
+      let hrs = receivedDate.getHours();
       if (mins < 10) {
         mins = "0" + mins;
       }
@@ -43,6 +43,9 @@ const FormulaFeeding = ({ setReloadData, user }) => {
       setIsLoading(false);
       setError("Todos los campos son obligatorios");
     } else {
+      let date = new Date();
+      console.log(`${date.getDay()} - ${date.getDate()}/${date.getMonth()+1} ${date.getHours()}:${date.getMinutes()} ${date.getTime()}`);
+      console.log("FORMULA FEEDING", formData);
       await postfeeding(formData)
         .then((response) => {
           if (response) {
@@ -114,9 +117,14 @@ const FormulaFeeding = ({ setReloadData, user }) => {
           mode={"time"}
           display="default"
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate;
+            var date = new Date();
+            var firstDay = new Date(date.getUTCFullYear(), date.getUTCMonth(), 1).getUTCDate();
+            var lastDay = new Date(date.getUTCFullYear(), date.getUTCMonth() + 1, 0).getUTCDate();
+            console.log("This month first day: ", firstDay);
+            console.log("This month last day: ", lastDay);
             setShow(Platform.OS === "ios");
-            setFormData({ ...formData, date: currentDate });
+            console.log("Fecha:", selectedDate);
+            setFormData({ ...formData, date: selectedDate });
           }}
         />
       )}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text } from "react-native";
 import { ListItem } from "react-native-elements";
-import { getDreaming } from "../../services/dreaming/dreaming.service";
-import { getColor } from "../../utils/colors";
+import { getDreaming } from "../../../services/dreaming/dreaming.service";
+import { getColor } from "../../../utils/colors";
 
 const DreamingDiary = ({ reloadData, setReloadData }) => {
   

@@ -3,13 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import { Avatar } from "react-native-elements";
 
 const ProfileTop = ({ user }) => {
-  console.log("USER: ", user);
+
   return (
     <View style={styles.profileTopContainer}>
       <Avatar
         rounded
         source={{
-          uri: user.avatarURL
+          uri: "https://infantem-test.s3.us-east-2.amazonaws.com/images/5f7008487e5f2230ccd639d9.jpg"
         }}
         size="xlarge"
         containerStyle={styles.avatarStyle}

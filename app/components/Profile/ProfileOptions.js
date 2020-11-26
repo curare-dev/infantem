@@ -15,6 +15,10 @@ import * as SecureStore from "expo-secure-store";
 import * as ImagePicker from 'expo-image-picker';
 import {downloadImageOnS3, uploadImageOnS3} from "../../services/profile/image.service";
 import { updateUserById } from "../../services/profile/user.service";
+import {
+  AdMobInterstitial,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 
 const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -24,6 +28,12 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
   const [visible, setVisible] = useState(false);
   const [image, setImage] = useState(null);
 
+  const showAd = async () => {
+    await setTestDeviceIDAsync('EMULATOR');
+    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
+    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
+    await AdMobInterstitial.showAdAsync();
+  }
 
   useEffect(() => {
     (async () => {
@@ -50,9 +60,9 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
         type: "image/jpeg"
       });
       downloadImageOnS3().then( response => {
-        console.log("RESPONSE: ", response );
-          updateUserById({avatarURL: response});
+          updateUserById({avatarURL: response.split("?")[0]});
           setReloadProfileInfo(true);
+          showAd();
       }).catch( error => {
         "ERROR: ", error
       });
@@ -69,6 +79,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
       subject: "ml",
     },
   ];
+
   const getComponent = (component) => {
     switch (component) {
       case "name":
@@ -133,10 +144,13 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
+          showAd();
         } else {
           // shared
+          showAd();
         }
       } else if (result.action === Share.dismissedAction) {
+        showAd();
         // dismissed
       }
     } catch (error) {
@@ -270,6 +284,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
                 setVisible(false);
                 setIsVisible(false);
                 setReloadProfileInfo(true);
+                showAd();
               }}
             >
               <ListItem.Content>

@@ -40,6 +40,7 @@ const DiapersWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
     setModalVisibleWeek(true);
     setRenderComponent(
       <EditDiaper
+        setReloadMonthly={setReloadMonthly}
         setReloadWeekly={setReloadWeekly}
         setModalVisibleWeek={setModalVisibleWeek}
         setBottomSheetVisible={setBottomSheetVisible}
@@ -54,6 +55,7 @@ const DiapersWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
     setModalVisibleWeek(true);
     setRenderComponent(
       <DeleteDiaper
+        setReloadMonthly={setReloadMonthly}
         setReloadWeekly={setReloadWeekly}
         setModalVisibleWeek={setModalVisibleWeek}
         setModalVisible={setModalVisible}
@@ -76,7 +78,6 @@ const DiapersWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
   useEffect(() => {
     console.log("Se recarga Weekly");
     setReloadWeekly(false);
-    setReloadMonthly(true);
     setRenderData(
       data.map((l, i) => {
         let date = new Date(l.date);
