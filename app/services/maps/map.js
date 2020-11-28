@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
 
 const APIKEY = "AIzaSyDt-bzrLkPH4l1TQLZxs0V45ktp-DPxIqE";
 
@@ -18,8 +19,8 @@ export const getLatitudeLongitude = async (address) => {
 export const getUserLocation = async () => {
   let { status } = await Location.requestPermissionsAsync();
   if (status !== "granted") {
-    console.log("Hay un error");
-    return false;
+    console.log("Hay un error: ", status);
+    return status;
   } else {
     let location = await Location.getCurrentPositionAsync({});
     return location;

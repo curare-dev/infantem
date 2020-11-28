@@ -16,33 +16,32 @@ const Tab = createBottomTabNavigator();
 const LogedIn = ({ setLogin }) => {
   const [user, setUser] = useState({});
   const [reloadProfileInfo, setReloadProfileInfo] = useState(false);
+  const getUser = async () => {
+    const feedingType = await SecureStore.getItemAsync("mUnit");
+    await getUserById()
+      .then((response) => {
+        let {
+          age,
+          roles,
+          suscription,
+          name,
+          lastname,
+          avatarURL,
+        } = response[0];
+        setUser({
+          age,
+          rol: roles[0].name,
+          suscription: suscription[0].name,
+          name,
+          lastname,
+          avatarURL,
+          feedingType,
+        });
+      })
+      .catch((error) => console.log(error));
+  };
   useEffect(() => {
     setReloadProfileInfo(false);
-    const getUser = async () => {
-      console.log("Se recarga el perfil");
-      const feedingType = await SecureStore.getItemAsync("mUnit");
-      await getUserById()
-        .then((response) => {
-          let {
-            age,
-            roles,
-            suscription,
-            name,
-            lastname,
-            avatarURL,
-          } = response[0];
-          setUser({
-            age,
-            rol: roles[0].name,
-            suscription: suscription[0].name,
-            name,
-            lastname,
-            avatarURL,
-            feedingType,
-          });
-        })
-        .catch((error) => console.log(error));
-    };
     getUser();
   }, [reloadProfileInfo]);
 

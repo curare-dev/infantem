@@ -13,7 +13,6 @@ export const uploadImageOnS3 = async (file) => {
         console.log('Your generated pre-signed URL is', url);
         const xhr = new XMLHttpRequest()
         xhr.onreadystatechange = function() {
-            console.log("XHR: ", xhr.response);
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     console.log("Archivo subido exitoso");
@@ -29,6 +28,17 @@ export const uploadImageOnS3 = async (file) => {
     xhr.setRequestHeader('Content-Type', file.type)
     xhr.send({ uri: file.uri, type: file.type, name: userid })
     });
+}
+
+export const deleteImageOnS3 = async (imageName) => {
+    params = {Bucket: 'infantem-test', Key: `images/${imageName}.jpg`};
+    try {
+        const deleteImage = s3.deleteObject(params);
+        return deleteImage;
+    } catch (error) {
+        return error;
+    }
+    
 }
 
 export const downloadImageOnS3 = async () => {

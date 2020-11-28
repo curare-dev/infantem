@@ -1,19 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Avatar } from "react-native-elements";
+import { downloadImageOnS3 } from "../../services/profile/image.service";
 
 const ProfileTop = ({ user }) => {
+  const [avatarURL, setAvatarURL] = useState(null);
 
+  useEffect(() => {
+    downloadImageOnS3().then( response => {
+      console.log(response);
+      setAvatarURL(response);
+    }).catch( error => {
+      console.log("Hubo un error al obtener URL: ", error);
+    });
+  }, [user])
+  
   return (
     <View style={styles.profileTopContainer}>
       <Avatar
         rounded
         source={{
-          uri: "https://infantem-test.s3.us-east-2.amazonaws.com/images/5f7008487e5f2230ccd639d9.jpg"
+          uri: avatarURL,
+          cache: "reload",
         }}
+        renderPlaceholderContent={<ActivityIndicator color="white" />}
         size="xlarge"
         containerStyle={styles.avatarStyle}
-      ></Avatar>
+      />
       <View style={styles.nameAgeContainer}>
         <Text style={[styles.title, styles.topText]}>{user.name}</Text>
         <Text style={[styles.subtitle, styles.topText]}>
