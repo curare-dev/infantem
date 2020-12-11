@@ -117,8 +117,15 @@ const Dreamings = () => {
     if (validateEmptyForm(time) || time === 0) {
       setError("El timer esta en 0");
     } else {
+      // Colocar esto en un shared
+      let date = new Date();
+      let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+      let hrs = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+      let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+      let formatedDate = `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrs}:${mins}:00.000Z`;
+      console.log(formatedDate);
       postDreaming({
-        date: new Date(),
+        date: formatedDate,
         dreamingType: "Secs",
         quantity: time,
       })

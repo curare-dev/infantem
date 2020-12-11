@@ -16,9 +16,17 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
     } else {
       hrs ? hrs  : hrs = 0;
       mins ? mins : mins = 0;
+      // Colocar esto en un shared
+      let date = new Date();
+      let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+      let hrsDate = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+      let minsDate = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+      let formatedDate = `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrsDate}:${minsDate}:00.000Z`;
+      console.log(formatedDate);
       formData.quantity = hrs + mins;
       formData.dreamingType= "Secs";
-      formData.date = new Date();
+      formData.date = formatedDate;
+      console.log(hrs, mins);
       postDreaming(formData)
         .then((response) => {
           if (response) {
@@ -45,6 +53,7 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
           keyboardType="numeric"
           onChange={(e) => {
             let hrsInput = e.nativeEvent.text * 3600
+            console.log(hrsInput);
             setHrs(hrsInput);
           }} 
           placeholder="00"
@@ -56,6 +65,7 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
           keyboardType="numeric"
           onChange={(e) => {
             let minsInput =  e.nativeEvent.text * 60
+            console.log(minsInput);
             setMins(minsInput);
           }} 
           placeholder="00"

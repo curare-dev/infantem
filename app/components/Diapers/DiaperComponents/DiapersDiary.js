@@ -57,10 +57,10 @@ const DiapersDiary = ({ reloadData, setReloadData }) => {
             setShowData(
               response.map((l, i) => {
                 let date = new Date(l.date);
-                let year = date.getFullYear();
-                let month = months[date.getMonth()];
-                let day = date.getDate();
-                let dayName = days[date.getDay()];
+                let year = date.getUTCFullYear();
+                let month = months[date.getUTCMonth()];
+                let day = date.getUTCDate();
+                let dayName = days[date.getUTCDay()];
                 setIsLoading(false);
                 console.log(l);
                 return (

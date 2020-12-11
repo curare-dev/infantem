@@ -1,40 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Button, Input } from "react-native-elements";
 import { getColor } from "../../../utils/colors";
 import { validateEmptyForm } from "../../../utils/validations";
 import { postfeeding } from "../../../services/feeding/feeding.service";
+import Modal from "../../../shared/Modal";
+import TimeForm from "../../../shared/TimeForm";
 
 const FormulaFeeding = ({ setReloadData, user }) => {
-  const [show, setShow] = useState(false);
-  const [showHours, setShowHours] = useState(new Date().setHours(0, 0, 0, 0));
+  const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
-  const showTimepicker = () => setShow(!show);
   const [isLoading, setIsLoading] = useState(false);
-
-  const formatDateTime = (receivedDate) => {
-    if (receivedDate === undefined || receivedDate === "00:00:00") {
-      return `00:00:00`;
-    } else {
-      let ampm = "am";
-      let mins = receivedDate.getMinutes();
-      let hrs = receivedDate.getHours();
-      if (mins < 10) {
-        mins = "0" + mins;
-      }
-      if (hrs > 12) {
-        hrs -= 12;
-        ampm = "pm";
-      }
-      return `${hrs}:${mins}:00 ${ampm}`;
-    }
-  };
+  const [time, setTime] = useState({});
 
   const submitFeeding = async () => {
     setIsLoading(true);
     formData.feedingType = user.feedingType;
+    let dateTime = new Date();
+    dateTime.setHours(time.hrs,time.mins,0);
+    let date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate();
+    let hrs = dateTime.getHours() < 10 ? `0${dateTime.getHours()}` : dateTime.getHours();
+    let mins = dateTime.getMinutes() < 10 ? `0${dateTime.getMinutes()}` : dateTime.getMinutes();
+    formData.date = `${dateTime.getFullYear()}-${dateTime.getMonth()+1}-${date}T${hrs}:${mins}:00.000Z`;
     if (
       validateEmptyForm(formData.date) ||
       validateEmptyForm(formData.quantity) ||
@@ -43,8 +31,6 @@ const FormulaFeeding = ({ setReloadData, user }) => {
       setIsLoading(false);
       setError("Todos los campos son obligatorios");
     } else {
-      let date = new Date();
-      console.log(`${date.getDay()} - ${date.getDate()}/${date.getMonth()+1} ${date.getHours()}:${date.getMinutes()} ${date.getTime()}`);
       console.log("FORMULA FEEDING", formData);
       await postfeeding(formData)
         .then((response) => {
@@ -67,7 +53,6 @@ const FormulaFeeding = ({ setReloadData, user }) => {
       <View style={styles.quantityMeasureContainer}>
         <Input
           label="Cantidad"
-          placeholder="0"
           keyboardType="numeric"
           labelStyle={styles.text}
           onChange={(e) => {
@@ -87,17 +72,18 @@ const FormulaFeeding = ({ setReloadData, user }) => {
           disabled
         />
       </View>
-      <TouchableOpacity onPress={showTimepicker}>
+      <TouchableOpacity onPress={()=>setIsVisible(true)}>
         <Input
           label="Hora"
           labelStyle={styles.text}
+          placeholder="00:00"
           leftIcon={{
             type: "material-community",
             name: "clock-outline",
             color: "rgba(0,0,0,0.5)",
           }}
           leftIconContainerStyle={styles.leftIcon}
-          value={formatDateTime(formData.date)}
+          value={time.dateTime}
           disabled
           errorStyle={styles.errorStyle}
           errorMessage={error}
@@ -110,24 +96,9 @@ const FormulaFeeding = ({ setReloadData, user }) => {
         onPress={submitFeeding}
         loading={isLoading}
       />
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={showHours}
-          mode={"time"}
-          display="default"
-          onChange={(event, selectedDate) => {
-            var date = new Date();
-            var firstDay = new Date(date.getUTCFullYear(), date.getUTCMonth(), 1).getUTCDate();
-            var lastDay = new Date(date.getUTCFullYear(), date.getUTCMonth() + 1, 0).getUTCDate();
-            console.log("This month first day: ", firstDay);
-            console.log("This month last day: ", lastDay);
-            setShow(Platform.OS === "ios");
-            console.log("Fecha:", selectedDate);
-            setFormData({ ...formData, date: selectedDate });
-          }}
-        />
-      )}
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
+        { <TimeForm setTime={setTime} setIsVisible={setIsVisible} /> }
+      </Modal>
     </View>
   );
 };

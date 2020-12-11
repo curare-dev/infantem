@@ -69,6 +69,10 @@ export const deleteDreaming = async (obj) => {
 }
 
 export const getDreaming = async (type) => {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth()}` : date.getMonth() + 1;
+  let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   try {
     let userid = await SecureStore.getItemAsync("id");
     userid = userid.slice(1, -1);
@@ -77,6 +81,9 @@ export const getDreaming = async (type) => {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
+        year,
+        month,
+        day
       },
       body: JSON.stringify(type),
     });
@@ -92,6 +99,10 @@ export const getDreaming = async (type) => {
 };
 
 export const getTotalDreaming = async (type) => {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth()}` : date.getMonth() + 1;
+  let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   try {
     let userid = await SecureStore.getItemAsync("id");
     userid = userid.slice(1, -1);
@@ -100,6 +111,9 @@ export const getTotalDreaming = async (type) => {
       headers: {
         Accept: "*/*",
         "Content-Type": "application/json",
+        year,
+        month,
+        day
       },
     });
     let status = await response.status;

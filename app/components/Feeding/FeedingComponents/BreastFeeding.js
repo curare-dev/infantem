@@ -35,8 +35,15 @@ const BreastFeeding = ({ setReloadData }) => {
       setIsLoading(false);
       setError("El timer esta en 0");
     } else {
+      // Cambiar la fecha en la que se suben los datos.
+      let date = new Date();
+      let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+      let hrs = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+      let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+      let formatedDate = `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrs}:${mins}:00.000Z`;
+      console.log("FORMATEDDATE", formatedDate);
       postfeeding({
-        date: new Date(),
+        date: formatedDate,
         feedingType: "Secs",
         quantity: time,
       })

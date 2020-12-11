@@ -40,6 +40,16 @@ const Feedings = ({ user }) => {
     setCountAd(0);
   }
 
+  // let countDate = new Date().getTime();
+  // let myFunc = setInterval(() => {
+  //   let countStop = new Date().getTime();
+  //   let timeLeft = countStop - countDate;
+  //   let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //   let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  //   let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+  //   console.log(hours, minutes, seconds)
+  // }, 1000);
+
   useEffect(() => {
     setCountAd(countAd + 1);
     setTodayDataOz(null); 
@@ -55,7 +65,9 @@ const Feedings = ({ user }) => {
     async function getTotalData() {
       getTotalFeeding("day")
         .then((response) => {
+          console.log(response);
           response.map((l, i) => {
+            console.log(l);
             let d = Number(l.total);
             const h = Math.floor(d / 3600);
             const m = Math.floor((d % 3600) / 60);

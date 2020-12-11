@@ -18,11 +18,18 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
     if(!hrs && !mins){
       setError("Todos los campos son obligatorios");
     } else {
+      // Colocar esto en un shared
+      let date = new Date();
+      let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+      let hrs = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+      let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+      let formatedDate = `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrs}:${mins}:00.000Z`;
+      console.log(formatedDate);
       hrs ? hrs  : hrs = 0;
       mins ? mins : mins = 0;
       formData.quantity = hrs + mins;
       formData.feedingType= "Secs";
-      formData.date = new Date();
+      formData.date = formatedDate;
       postfeeding(formData)
         .then((response) => {
           if (response) {
