@@ -5,11 +5,10 @@ import { deleteDreaming } from '../../../services/dreaming/dreaming.service'
 import { getColor } from '../../../utils/colors'
 
 const DeleteDreaming = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData, setReloadMonthly}) => {
-    console.log(data);
+    
     const submitDelete = async () => {
         await deleteDreaming(data._id).then( response => {
             Alert.alert("Exitoso!", "Se eliminó el registro");
-            console.log("RESPONSE DELETE DREAMING: ", response);
             setReloadWeekly(true);
             setReloadMonthly(true);
             setModalVisibleWeek(false);

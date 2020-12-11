@@ -14,13 +14,10 @@ import {
 } from "../../services/diaper/diaper.service";
 import Modal from "../../shared/Modal";
 import { getColor } from "../../utils/colors";
-import {
-  AdMobBanner,
-  AdMobInterstitial,
-  setTestDeviceIDAsync,
-} from 'expo-ads-admob';
 import DiapersMonthly from "./DiaperComponents/DiapersMonthly";
 import DiapersDiary from "./DiaperComponents/DiapersDiary";
+import Ads, { showAd } from "../../shared/Ads";
+import { formatedDate } from "../../shared/FormatedDate";
 
 const Diapers = () => {
   const [countDiaper, setCountDiaper] = useState(0);
@@ -40,6 +37,7 @@ const Diapers = () => {
   const [mixedMonth, setMixedMonth] = useState("");
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const toggleBottomSheet = () => setBottomSheetVisible(!bottomSheetVisible);
+  const [countAd, setCountAd] = useState(0);
 
   const getComponent = (component) => {
     switch (component) {
@@ -75,22 +73,16 @@ const Diapers = () => {
       subject: "mixed",
     },
   ];
+
   const submitDiaper = () => {
     if (countDiaper <= 0) {
       setError("No has agregado pañales");
     } else if (subject === null || subject === "" || subject === undefined) {
       setError("Selecciona de que ensució el pañal");
     } else {
-      // Colocar esto en un shared
-      let date = new Date();
-      let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-      let hrs = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-      let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-      let formatedDate = `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrs}:${mins}:00.000Z`;
-      console.log(formatedDate);
       let obj = {
         quantity: countDiaper,
-        date: formatedDate,
+        date: formatedDate(),
         diaperType: subject,
       };
       postDiaper(obj)
@@ -105,40 +97,52 @@ const Diapers = () => {
     }
   };
 
+  const getData = async () => {
+    await getTotalDiapers("day")
+      .then((response) => {
+        response.map((l, i) => {
+          if (l._id === "pee") {
+            setPeeDay(l.total);
+          }
+          if (l._id === "poo") {
+            setPooDay(l.total);
+          }
+          if (l._id === "mixed") {
+            setMixedDay(l.total);
+          }
+        });
+      })
+      .catch((error) => console.log("Error de get por dia"));
+    await getTotalDiapers("month")
+      .then((response) => {
+        response.map((l, i) => {
+          if (l._id === "pee") {
+            setPeeMonth(l.total);
+          }
+          if (l._id === "poo") {
+            setPooMonth(l.total);
+          }
+          if (l._id === "mixed") {
+            setMixedMonth(l.total);
+          }
+        });
+      })
+      .catch((error) => console.log("Error de get por mes"));
+  };
+
   useEffect(() => {
     setReloadData(false);
-    const getData = async () => {
-      await getTotalDiapers("day")
-        .then((response) => {
-          response.map((l, i) => {
-            if (l._id === "pee") {
-              setPeeDay(l.total);
-            }
-            if (l._id === "poo") {
-              setPooDay(l.total);
-            }
-            if (l._id === "mixed") {
-              setMixedDay(l.total);
-            }
-          });
-        })
-        .catch((error) => console.log("Error de get por dia"));
-      await getTotalDiapers("month")
-        .then((response) => {
-          response.map((l, i) => {
-            if (l._id === "pee") {
-              setPeeMonth(l.total);
-            }
-            if (l._id === "poo") {
-              setPooMonth(l.total);
-            }
-            if (l._id === "mixed") {
-              setMixedMonth(l.total);
-            }
-          });
-        })
-        .catch((error) => console.log("Error de get por mes"));
-    };
+    setPeeDay(null);
+    setPooDay(null);
+    setMixedDay(null);
+    setPeeMonth(null);
+    setPooMonth(null);
+    setMixedMonth(null);
+    setCountAd(countAd + 1);
+    if(countAd === 3){
+      setCountAd(0);
+      showAd();
+    }
     getData();
   }, [reloadData]);
 
@@ -292,12 +296,7 @@ const Diapers = () => {
       >
         {renderComponent}
       </BottomSheet>
-      <AdMobBanner
-          adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
-          servePersonalizedAds // true or false
-          onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
-          style={styles.ad}
-        />
+      <Ads />
       </View>
     </ScrollView>
   );

@@ -8,7 +8,6 @@ const ProfileTop = ({ user }) => {
 
   useEffect(() => {
     downloadImageOnS3().then( response => {
-      console.log(response);
       setAvatarURL(response);
     }).catch( error => {
       console.log("Hubo un error al obtener URL: ", error);

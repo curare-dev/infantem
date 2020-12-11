@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
 import { getDreaming } from "../../../services/dreaming/dreaming.service";
+import { formatedSeconds } from "../../../shared/FormatedDate";
 import Modal from "../../../shared/Modal";
 import { getColor } from "../../../utils/colors";
 import DreamingWeekly from "./DreamingWeekly";
 
-const DreamingMonthly = ({
-  setReloadData,
-  setBottomSheetVisible,
-}) => {
+const DreamingMonthly = ({ setReloadData, setBottomSheetVisible }) => {
+
   const [showData, setShowData] = useState(null);
   const [type, setType] = useState({ type: "month" });
   const [error, setError] = useState("");
@@ -27,12 +26,14 @@ const DreamingMonthly = ({
   let objTwo = [];
   let objThree = [];
   let objFour = [];
+
   const [totalDreaming, setTotalDreaming] = useState({
     weekOne: "",
     weekTwo: "",
     weekThree: "",
     weekFour: "",
   });
+
   useEffect(() => {
     let drWeekOne = 0;
     let drWeekTwo = 0;
@@ -164,16 +165,6 @@ const DreamingMonthly = ({
       default:
         break;
     }
-  };
-
-  const formatedSeconds = (secs) => {
-    let d = Number(secs);
-    const h = Math.floor(d / 3600);
-    const m = Math.floor((d % 3600) / 60);
-    const s = Math.floor((d % 3600) % 60);
-    return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-      s < 10 ? "0" + s : s
-    }`;
   };
 
   return (

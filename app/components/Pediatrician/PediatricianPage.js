@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { Linking, StyleSheet, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import { getColor } from "../../utils/colors";
 import { Text, Button, Divider } from "react-native-elements";
-import {
-  AdMobBanner
-} from 'expo-ads-admob';
+import Ads from "../../shared/Ads";
 
 const PediatricianPage = ({ pediatrician }) => {
   let { name, ubicacion } = pediatrician;
@@ -38,13 +36,7 @@ const PediatricianPage = ({ pediatrician }) => {
         containerStyle={styles.buttonContainer}
         disabled={!isMedicRegistered}
       />
-      <AdMobBanner
-          bannerSize="mediumRectangle"
-          adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
-          servePersonalizedAds // true or false
-          onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
-          style={styles.ad}
-      />
+      <Ads />
     </View>
   );
 };

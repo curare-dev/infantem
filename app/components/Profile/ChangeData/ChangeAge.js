@@ -2,23 +2,13 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, ButtonGroup, Input } from "react-native-elements";
 import { updateUserById } from "../../../services/profile/user.service";
+import { showAd } from "../../../shared/Ads";
 import { getColor } from "../../../utils/colors";
 import { validateEmptyForm } from "../../../utils/validations";
-import {
-  AdMobInterstitial,
-  setTestDeviceIDAsync,
-} from 'expo-ads-admob';
 
 const ChangeAge = ({ setIsVisible, setReloadProfileInfo }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
-
-  const showAd = async () => {
-    await setTestDeviceIDAsync('EMULATOR');
-    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
-    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
-    await AdMobInterstitial.showAdAsync();
-  }
 
   const updateAge = (timeUnit) => {
     if (validateEmptyForm(formData.age)) {

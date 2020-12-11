@@ -18,11 +18,8 @@ import {
   postDreaming,
 } from "../../services/dreaming/dreaming.service";
 import { validateEmptyForm } from "../../utils/validations";
-import {
-  AdMobBanner,
-  AdMobInterstitial,
-  setTestDeviceIDAsync,
-} from 'expo-ads-admob';
+import Ads, { showAd } from "../../shared/Ads";
+import { formatedDate, formatedSeconds } from "../../shared/FormatedDate";
 
 const Dreamings = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -37,14 +34,6 @@ const Dreamings = () => {
   const [todayDataSecs, setTodayDataSecs] = useState(null);
   const [monthlyDataSecs, setMonthlyDataSecs] = useState(null);
   const [countAd, setCountAd] = useState(0);
-
-  const showAd = async () => {
-    await setTestDeviceIDAsync('EMULATOR');
-    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
-    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
-    await AdMobInterstitial.showAdAsync();
-    setCountAd(0);
-  }
 
   const getComponent = (component) => {
     switch (component) {
@@ -71,45 +60,32 @@ const Dreamings = () => {
     }
   };
 
+  const getDataDreaming = async () => {
+    getTotalDreaming("day")
+      .then((response) => {
+        response.map((l, i) => {
+          setTodayDataSecs(formatedSeconds(l.total));
+        });
+      })
+      .catch((error) => console.log(error));
+    getTotalDreaming("month")
+      .then((response) => {
+        response.map((l, i) => {
+          setMonthlyDataSecs(formatedSeconds(l.total));
+        });
+      })
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
-    setCountAd(countAd + 1);
     setReloadData(false);
+    setTodayDataSecs(null);
+    setMonthlyDataSecs(null);
+    setCountAd(countAd + 1);
     if(countAd === 3){
+      setCountAd(0);
       showAd();
     }
-    const getDataDreaming = async () => {
-      getTotalDreaming("day")
-        .then((response) => {
-          response.map((l, i) => {
-            let d = Number(l.total);
-            const h = Math.floor(d / 3600);
-            const m = Math.floor((d % 3600) / 60);
-            const s = Math.floor((d % 3600) % 60);
-            setTodayDataSecs(
-              `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-                s < 10 ? "0" + s : s
-              }`
-            );
-          });
-        })
-        .catch((error) => console.log(error));
-      getTotalDreaming("month")
-        .then((response) => {
-          response.map((l, i) => {
-            let d = Number(l.total);
-            const h = Math.floor(d / 3600);
-            const m = Math.floor((d % 3600) / 60);
-            const s = Math.floor((d % 3600) % 60);
-            setMonthlyDataSecs(
-              `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-                s < 10 ? "0" + s : s
-              }`
-            );
-          });
-        })
-        .catch((error) => console.log(error));
-    };
-
     getDataDreaming();
   }, [reloadData]);
 
@@ -117,15 +93,8 @@ const Dreamings = () => {
     if (validateEmptyForm(time) || time === 0) {
       setError("El timer esta en 0");
     } else {
-      // Colocar esto en un shared
-      let date = new Date();
-      let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-      let hrs = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
-      let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-      let formatedDate = `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrs}:${mins}:00.000Z`;
-      console.log(formatedDate);
       postDreaming({
-        date: formatedDate,
+        date: formatedDate(),
         dreamingType: "Secs",
         quantity: time,
       })
@@ -212,12 +181,7 @@ const Dreamings = () => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
-      <AdMobBanner
-        adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
-        servePersonalizedAds // true or false
-        onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
-        style={styles.ad}
-      />
+      <Ads />
       </View>
     </ScrollView>
   );

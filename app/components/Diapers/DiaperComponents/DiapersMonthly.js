@@ -44,7 +44,6 @@ const DiapersMonthly = ({ setReloadData, setBottomSheetVisible,}) => {
   });
 
   useEffect(() => {
-    console.log("Se recarga Monthly");
     let peeWeekOne = 0;
     let peeWeekTwo = 0;
     let peeWeekThree = 0;

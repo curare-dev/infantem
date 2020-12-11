@@ -8,43 +8,13 @@ import {
 import { getColor } from "../../utils/colors";
 import { Input, Button, ListItem, BottomSheet } from "react-native-elements";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { formatDateTime } from "../../shared/FormatedDate";
 
 const Appointment = ({ setVisible }) => {
-  const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [subject, setSubject] = useState("Selecciona el asunto");
-  const months = [
-    "Ene",
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  const days = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
-  let day = days[date.getDay()];
-  let mins = date.getMinutes();
-  let hrs = date.getHours();
-  let dateF = date.getDate();
-  let month = months[date.getMonth()];
-  let year = date.getFullYear();
-  let ampm = "am";
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -70,21 +40,6 @@ const Appointment = ({ setVisible }) => {
     setVisible(false);
   };
 
-  const formatDateTime = (type) => {
-    switch (type) {
-      case "time":
-        if (mins < 10) {
-          mins = "0" + mins;
-        }
-        if (hrs > 12) {
-          hrs -= 12;
-          ampm = "pm";
-        }
-        return `${hrs}:${mins}:00`;
-      case "date":
-        return `${day} ${dateF}-${month}-${year}`;
-    }
-  };
   const list = [
     // meter esto a la base de datos
     {

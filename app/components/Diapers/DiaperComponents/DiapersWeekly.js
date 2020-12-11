@@ -1,40 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Icon, ListItem } from 'react-native-elements';
+import { formatedDiapersTitle, formatedUTCDate } from '../../../shared/FormatedDate';
 import Modal from '../../../shared/Modal';
 import DeleteDiaper from './DeleteDiaper';
 import EditDiaper from './EditDiaper';
 
 const DiapersWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModalVisible, setReloadData }) => {
 
-    const [modalVisibleWeek, setModalVisibleWeek] = useState(false);
-    const [renderComponent, setRenderComponent] = useState(null);
-    const [renderData, setRenderData] = useState(null);
-    const [reloadWeekly, setReloadWeekly] = useState(false);
-    const months = [
-      "Ene",
-      "Feb",
-      "Mar",
-      "Abr",
-      "May",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dic",
-    ];
-    const days = [
-      "Domingo",
-      "Lunes",
-      "Martes",
-      "Miercoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-    ];
-
+  const [modalVisibleWeek, setModalVisibleWeek] = useState(false);
+  const [renderComponent, setRenderComponent] = useState(null);
+  const [renderData, setRenderData] = useState(null);
+  const [reloadWeekly, setReloadWeekly] = useState(false);
 
   const editDiaper = (data) => {
     setModalVisibleWeek(true);
@@ -65,31 +42,15 @@ const DiapersWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
     );
   }
 
-  const formatTitle = (type, quantity) => {
-    if (type === "pee") {
-      return `${quantity} de Pipi`;
-    } else if (type === "poo") {
-      return `${quantity} de Popo`;
-    } else if (type === "mixed") {
-      return `${quantity} Mixto`;
-    }
-  };
-
   useEffect(() => {
-    console.log("Se recarga Weekly");
     setReloadWeekly(false);
     setRenderData(
       data.map((l, i) => {
-        let date = new Date(l.date);
-        let year = date.getUTCFullYear();
-        let month = months[date.getUTCMonth()];
-        let day = date.getUTCDate();
-        let dayName = days[date.getUTCDay()];
         return (
           <ListItem key={i} bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>{formatTitle(l.diaperType, l.quantity)}</ListItem.Title>
-              <ListItem.Subtitle>{`${dayName} ${day} de ${month} ${year}`}</ListItem.Subtitle>
+              <ListItem.Title>{formatedDiapersTitle(l.diaperType, l.quantity)}</ListItem.Title>
+              <ListItem.Subtitle>{formatedUTCDate(l)}</ListItem.Subtitle>
             </ListItem.Content>
             <Icon   
             name='pencil'
@@ -109,14 +70,14 @@ const DiapersWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
     );
   }, [reloadWeekly])
 
-    return (
-        <ScrollView>
-        {renderData}
-        <Modal isVisible={modalVisibleWeek} setIsVisible={setModalVisibleWeek}>
-          {renderComponent}
-        </Modal>
-      </ScrollView>
-    )
+  return (
+      <ScrollView>
+      {renderData}
+      <Modal isVisible={modalVisibleWeek} setIsVisible={setModalVisibleWeek}>
+        {renderComponent}
+      </Modal>
+    </ScrollView>
+  )
 }
 
 export default DiapersWeekly

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Icon, ListItem } from "react-native-elements";
+import { formatedSeconds, formatedUTCDate } from "../../../shared/FormatedDate";
 import Modal from "../../../shared/Modal";
 import DeleteDreaming from "./DeleteDreaming";
 import EditDreaming from "./EditDreaming";
@@ -10,40 +11,6 @@ const DreamingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModa
   const [renderComponent, setRenderComponent] = useState(null);
   const [renderData, setRenderData] = useState(null);
   const [reloadWeekly, setReloadWeekly] = useState(false);
-
-  const months = [
-    "Ene",
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  const days = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
-
-  const formatedSeconds = (secs) => {
-    let d = Number(secs);
-    const h = Math.floor(d / 3600);
-    const m = Math.floor((d % 3600) / 60);
-    const s = Math.floor((d % 3600) % 60);
-    return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-      s < 10 ? "0" + s : s
-    }`;
-  };
 
   const editDreaming = data => {
     setModalVisibleWeek(true);
@@ -74,30 +41,25 @@ const DreamingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModa
     setReloadWeekly(false);
     setRenderData(
       data.map((l, i) => {
-        let date = new Date(l.date);
-        let year = date.getUTCFullYear();
-        let month = months[date.getUTCMonth()];
-        let day = date.getUTCDate();
-        let dayName = days[date.getUTCDay()];
         return (
           <ListItem key={i}>
             <ListItem.Content>
               <ListItem.Title>
                 {formatedSeconds(l.quantity)} 
               </ListItem.Title>
-              <ListItem.Subtitle>{`${dayName} ${day} de ${month} ${year}`}</ListItem.Subtitle>
+              <ListItem.Subtitle>{formatedUTCDate(l)}</ListItem.Subtitle>
             </ListItem.Content>
             <Icon   
-            name='pencil'
-            type='material-community'
-            size={20}
-            onPress={()=>editDreaming(l)}
+              name='pencil'
+              type='material-community'
+              size={20}
+              onPress={()=>editDreaming(l)}
             />
             <Icon   
-            name='delete'
-            type='material-community'
-            size={20}
-            onPress={()=>deleteDreaming(l)}
+              name='delete'
+              type='material-community'
+              size={20}
+              onPress={()=>deleteDreaming(l)}
             />
           </ListItem>
         );

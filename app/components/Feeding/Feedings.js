@@ -9,11 +9,8 @@ import { getTotalFeeding } from "../../services/feeding/feeding.service";
 import Modal from "../../shared/Modal";
 import FeedingDiary from "./FeedingComponents/FeedingDiary";
 import FeedingMonthly from "./FeedingComponents/FeedingMonthly";
-import {
-  AdMobBanner,
-  AdMobInterstitial,
-  setTestDeviceIDAsync,
-} from 'expo-ads-admob';
+import Ads, { showAd } from "../../shared/Ads";
+import { formatedSeconds } from "../../shared/FormatedDate";
 
 const Feedings = ({ user }) => {
   const [reloadData, setReloadData] = useState(false);
@@ -32,14 +29,6 @@ const Feedings = ({ user }) => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const [countAd, setCountAd] = useState(0);
 
-  const showAd = async () => {
-    await setTestDeviceIDAsync('EMULATOR');
-    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
-    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
-    await AdMobInterstitial.showAdAsync();
-    setCountAd(0);
-  }
-
   // let countDate = new Date().getTime();
   // let myFunc = setInterval(() => {
   //   let countStop = new Date().getTime();
@@ -50,8 +39,40 @@ const Feedings = ({ user }) => {
   //   console.log(hours, minutes, seconds)
   // }, 1000);
 
+  const getTotalData = async () => {
+    await getTotalFeeding("day")
+      .then((response) => {
+        response.map((l, i) => {
+          if (l._id === "oz") {
+            setTodayDataOz(l.total);
+          }
+          if (l._id === "ml") {
+            setTodayDataMl(l.total);
+          }
+          if (l._id === "Secs") {
+            setTodayDataSecs(formatedSeconds(l.total));
+          }
+        });
+      })
+      .catch((error) => console.log(error));
+    getTotalFeeding("month")
+      .then((response) => {
+        response.map((l, i) => {
+          if (l._id === "oz") {
+            setMonthlyDataOz(l.total);
+          }
+          if (l._id === "ml") {
+            setMonthlyDataMl(l.total);
+          }
+          if (l._id === "Secs") {
+            setMonthlyDataSecs(formatedSeconds(l.total));
+          }
+        });
+      })
+      .catch((error) => console.log(error));
+  }
+
   useEffect(() => {
-    setCountAd(countAd + 1);
     setTodayDataOz(null); 
     setTodayDataMl(null);
     setTodayDataSecs(null); 
@@ -59,58 +80,10 @@ const Feedings = ({ user }) => {
     setMonthlyDataMl(null);
     setMonthlyDataSecs(null);
     setReloadData(false);
+    setCountAd(countAd + 1);
     if(countAd === 3){
+      setCountAd(0);
       showAd();
-    }
-    async function getTotalData() {
-      getTotalFeeding("day")
-        .then((response) => {
-          console.log(response);
-          response.map((l, i) => {
-            console.log(l);
-            let d = Number(l.total);
-            const h = Math.floor(d / 3600);
-            const m = Math.floor((d % 3600) / 60);
-            const s = Math.floor((d % 3600) % 60);
-            if (l._id === "oz") {
-              setTodayDataOz(l.total);
-            }
-            if (l._id === "ml") {
-              setTodayDataMl(l.total);
-            }
-            if (l._id === "Secs") {
-              setTodayDataSecs(
-                `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-                  s < 10 ? "0" + s : s
-                }`
-              );
-            }
-          });
-        })
-        .catch((error) => console.log(error));
-      getTotalFeeding("month")
-        .then((response) => {
-          response.map((l, i) => {
-            if (l._id === "oz") {
-              setMonthlyDataOz(l.total);
-            }
-            if (l._id === "ml") {
-              setMonthlyDataMl(l.total);
-            }
-            if (l._id === "Secs") {
-              let d = Number(l.total);
-              const h = Math.floor(d / 3600);
-              const m = Math.floor((d % 3600) / 60);
-              const s = Math.floor((d % 3600) % 60);
-              setMonthlyDataSecs(
-                `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-                  s < 10 ? "0" + s : s
-                }`
-              );
-            }
-          });
-        })
-        .catch((error) => console.log(error));
     }
     getTotalData();
   }, [reloadData]);
@@ -225,12 +198,7 @@ const Feedings = ({ user }) => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
-      <AdMobBanner
-        adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
-        servePersonalizedAds // true or false
-        onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
-        style={styles.ad}
-      />
+      <Ads />
       </View>
     </ScrollView>
 

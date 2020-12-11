@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Button, ListItem } from "react-native-elements";
 import { getFeeding } from "../../../services/feeding/feeding.service";
+import { formatedSeconds } from "../../../shared/FormatedDate";
 import Modal from "../../../shared/Modal";
 import { getColor } from "../../../utils/colors";
 import FeedingWeekly from "./FeedingWeekly";
@@ -46,7 +47,6 @@ const FeedingMonthly = ({
   });
   
   useEffect(() => {
-    console.log("Se recarga Monthly");
     let ozWeekOne = 0;
     let ozWeekTwo = 0;
     let ozWeekThree = 0;
@@ -68,6 +68,7 @@ const FeedingMonthly = ({
           } else {
             setShowData(
               response.map((l, i) => {
+                // Cambiar esto
                 const months = [
                   "Enero",
                   "Febrero",
@@ -211,16 +212,6 @@ const FeedingMonthly = ({
       default:
         break;
     }
-  };
-
-  const formatedSeconds = (secs) => {
-    let d = Number(secs);
-    const h = Math.floor(d / 3600);
-    const m = Math.floor((d % 3600) / 60);
-    const s = Math.floor((d % 3600) % 60);
-    return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-      s < 10 ? "0" + s : s
-    }`;
   };
 
   return (

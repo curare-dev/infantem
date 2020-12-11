@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { updatePassword } from "../../../services/profile/user.service";
+import { showAd } from "../../../shared/Ads";
 import { getColor } from "../../../utils/colors";
 import { validateEmptyForm } from "../../../utils/validations";
-import {
-  AdMobInterstitial,
-  setTestDeviceIDAsync,
-} from 'expo-ads-admob';
 
 const ChangePassword = ({ setIsVisible, setReloadProfileInfo }) => {
   const [formData, setFormData] = useState(defaultFormValue());
@@ -15,13 +12,6 @@ const ChangePassword = ({ setIsVisible, setReloadProfileInfo }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-
-  const showAd = async () => {
-    await setTestDeviceIDAsync('EMULATOR');
-    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
-    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
-    await AdMobInterstitial.showAdAsync();
-  }
 
   const changePassword = () => {
     if (

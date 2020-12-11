@@ -2,13 +2,9 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, ScrollView, TouchableOpacity, View, Text } from "react-native";
 import { Icon, ListItem } from "react-native-elements";
 import { getPlaces, getUserLocation } from "../../services/maps/map";
+import Ads, { showAd } from "../../shared/Ads";
 import Modal from "../../shared/Modal";
 import PediatricianPage from "./PediatricianPage";
-import {
-  AdMobBanner,
-  AdMobInterstitial,
-  setTestDeviceIDAsync,
-} from 'expo-ads-admob';
 
 const FindPediatrician = () => {
   const [reload, setReload] = useState(false);
@@ -16,14 +12,6 @@ const FindPediatrician = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
   const [countAd, setCountAd] = useState(0);
-
-  const showAd = async () => {
-    await setTestDeviceIDAsync('EMULATOR');
-    await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/1033173712'); // Test ID, Replace with your-admob-unit-id
-    await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
-    await AdMobInterstitial.showAdAsync();
-    setCountAd(0);
-  }
 
   const userLocation = async () => {
     await getUserLocation().then( response => {
@@ -82,12 +70,7 @@ const FindPediatrician = () => {
           {renderComponent}
         </Modal>
       </ScrollView>
-      <AdMobBanner
-          adUnitID="ca-app-pub-3940256099942544/6300978111" // Test ID, Replace with your-admob-unit-id
-          servePersonalizedAds // true or false
-          onDidFailToReceiveAdWithError={"No se encontró anuncio"} 
-          style={styles.ad}
-      />
+      <Ads />
     </View>
 
     

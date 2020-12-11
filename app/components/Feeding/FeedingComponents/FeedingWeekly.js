@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Icon, ListItem } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
+import { formatedDreamingTitle, formatedUTCDate } from "../../../shared/FormatedDate";
 import Modal from "../../../shared/Modal";
 import DeleteFeeding from "./DeleteFeeding";
 import EditFeeding from "./EditFeeding";
@@ -11,45 +12,6 @@ const FeedingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
   const [renderComponent, setRenderComponent] = useState(null);
   const [renderData, setRenderData] = useState(null);
   const [reloadWeekly, setReloadWeekly] = useState(false);
-  const months = [
-    "Ene",
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  const days = [
-    "Domingo",
-    "Lunes",
-    "Martes",
-    "Miercoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-  ];
-
-  const formatTitle = (type, quantity) => {
-    if (type === "oz") {
-      return `${quantity} Onzas`;
-    } else if (type === "ml") {
-      return `${quantity} Mililitros`;
-    } else if (type === "Secs") {
-      let d = Number(quantity);
-      const h = Math.floor(d / 3600);
-      const m = Math.floor((d % 3600) / 60);
-      const s = Math.floor((d % 3600) % 60);
-      return `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}:${
-        s < 10 ? "0" + s : s
-      }`;
-    }
-  };
 
   const editDreaming = (data) => {
     setModalVisibleWeek(true);
@@ -81,32 +43,26 @@ const FeedingWeekly = ({ setReloadMonthly, data, setBottomSheetVisible, setModal
   }
 
   useEffect(() => {
-    console.log("Se recarga Weekly");
     setReloadWeekly(false);
     setRenderData(
       data.map((l, i) => {
-        let date = new Date(l.date);
-        let year = date.getUTCFullYear();
-        let month = months[date.getUTCMonth()];
-        let day = date.getUTCDate();
-        let dayName = days[date.getUTCDay()];
         return (
           <ListItem key={i} bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>{formatTitle(l.feedingType, l.quantity)}</ListItem.Title>
-              <ListItem.Subtitle>{`${dayName} ${day} de ${month} ${year}`}</ListItem.Subtitle>
+              <ListItem.Title>{formatedDreamingTitle(l.feedingType, l.quantity)}</ListItem.Title>
+              <ListItem.Subtitle>{formatedUTCDate(l)}</ListItem.Subtitle>
             </ListItem.Content>
             <Icon   
-            name='pencil'
-            type='material-community'
-            size={20}
-            onPress={()=>editDreaming(l)}
+              name='pencil'
+              type='material-community'
+              size={20}
+              onPress={()=>editDreaming(l)}
             />
             <Icon   
-            name='delete'
-            type='material-community'
-            size={20}
-            onPress={()=>deleteDreaming(l)}
+              name='delete'
+              type='material-community'
+              size={20}
+              onPress={()=>deleteDreaming(l)}
             />
           </ListItem>
         );

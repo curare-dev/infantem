@@ -5,10 +5,10 @@ import { deleteDiaper } from '../../../services/diaper/diaper.service'
 import { getColor } from '../../../utils/colors'
 
 const DeleteDiaper = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData, setReloadMonthly}) => {
+    
     const submitDelete = async () => {
         await deleteDiaper(data._id).then( response => {
             Alert.alert("Exitoso!", "Se eliminó el registro");
-            console.log("RESPONSE DELETE DREAMING: ", response);
             setReloadWeekly(true);
             setReloadMonthly(true);
             setModalVisibleWeek(false);

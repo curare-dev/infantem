@@ -6,7 +6,6 @@ import Modal from "../../shared/Modal";
 import ChangeName from "./ChangeData/ChangeName";
 import ChangeLastName from "./ChangeData/ChangeLastName";
 import ChangePassword from "./ChangeData/ChangePassword";
-import ChangeAvatar from "./ChangeData/ChangeAvatar";
 import ChangeAge from "./ChangeData/ChangeAge";
 import ShareApp from "../../shared/ShareApp";
 import UpgradeApp from "../../shared/UpgradeApp";
@@ -109,14 +108,6 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
       case "password":
         setRenderComponent(
           <ChangePassword
-            setIsVisible={setIsVisible}
-            setReloadProfileInfo={setReloadProfileInfo}
-          />
-        );
-        break;
-      case "avatar":
-        setRenderComponent(
-          <ChangeAvatar
             setIsVisible={setIsVisible}
             setReloadProfileInfo={setReloadProfileInfo}
           />

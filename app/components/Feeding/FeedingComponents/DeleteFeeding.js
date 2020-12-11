@@ -5,6 +5,7 @@ import { deleteFeeding } from '../../../services/feeding/feeding.service'
 import { getColor } from '../../../utils/colors'
 
 const DeleteFeeding = ({setReloadWeekly, setModalVisible, data, setModalVisibleWeek, setReloadData, setReloadMonthly}) => {
+    
     const submitDelete = async () => {
         await deleteFeeding(data._id).then( response => {
             Alert.alert("Exitoso!", "Se eliminó el registro");

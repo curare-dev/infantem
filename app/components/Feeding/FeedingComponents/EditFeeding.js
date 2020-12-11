@@ -13,9 +13,6 @@ const EditFeeding = ({setReloadWeekly, setModalVisible, data, setModalVisibleWee
 
     const submitEdit = () => {
         if(hrs || mins){
-            console.log("Entró en lactancia");
-            console.log(hrs, mins);
-            console.log(formData);
             hrs ? hrs  : hrs = 0;
             mins ? mins : mins = 0;
             formData.quantity = hrs + mins;
