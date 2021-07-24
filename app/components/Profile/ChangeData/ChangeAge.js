@@ -1,25 +1,25 @@
 import React, { useState } from "react";
+import { TouchableOpacity } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, ButtonGroup, Input } from "react-native-elements";
+import { Button, Input, BottomSheet, ListItem } from "react-native-elements";
 import { updateUserById } from "../../../services/profile/user.service";
 import { showAd } from "../../../shared/Ads";
 import { getColor } from "../../../utils/colors";
+import { day, month, year } from "../../../utils/date";
 import { validateEmptyForm } from "../../../utils/validations";
 
 const ChangeAge = ({ setIsVisible, setReloadProfileInfo }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [renderComponent, setRenderComponent] = useState(null);
 
-  const updateAge = (timeUnit) => {
-    if (validateEmptyForm(formData.age)) {
+  const updateAge = () => {
+    console.log(formData);
+    if (validateEmptyForm(formData)) {
       setError("Todos los campos son obligatorios");
     } else {
-      if(timeUnit === 0){
-        formData.age > 1 ? formData.timeUnit = "Años" : formData.timeUnit = "Año";
-      } else {
-        formData.age > 1 ? formData.timeUnit = "Meses" : formData.timeUnit = "Mes";
-      }
-      updateUserById({ age: formData.age + " " + formData.timeUnit })
+      updateUserById({ age: formData.day + "/" + formData.monthNumber + "/" + formData.year })
         .then((response) => {
           showAd();
           setReloadProfileInfo(true);
@@ -30,30 +30,121 @@ const ChangeAge = ({ setIsVisible, setReloadProfileInfo }) => {
     }
   };
 
+  const handleTouch = (input) => {
+    setBottomSheetVisible(true);
+    switch (input) {
+      case 'day':
+        setRenderComponent(day().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setFormData({...formData, day: v < 10 ? `0${v}` : `${v}`  })
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }));
+      break;
+      case 'month':
+        setRenderComponent(month().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setFormData({...formData, month: v, monthNumber: i+1 < 10 ? `0${i+1}` : i+1 })
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }));
+      break;
+      case 'year':
+        setRenderComponent(year().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setFormData({...formData, year: v.toString() })
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }));
+      break;
+    }
+  }
+
   return (
     <View>
-      <Input
-        label="Edad"
-        placeholder="Introduzca la edad"
-        keyboardType="numeric"
-        onChange={(e) => setFormData({ age: e.nativeEvent.text })}
-        errorStyle={styles.errorStyle}
-        errorMessage={error}
-        containerStyle={{width: "75%", alignSelf: "center"}}
-      />
-      <ButtonGroup 
-        onPress={(e)=>{
-          console.log("Boton apretado", e);
-          updateAge(e);
-        }}
-        buttons={[
-          'Años',
-          'Meses'
-        ]}
+      <View style={{ flexDirection: "row",justifyContent: "space-between",}}>
+        <TouchableOpacity 
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('day')}
+        >
+          <Input
+            label="Día"
+            placeholder="DD"
+            containerStyle={{alignSelf: "center"}}
+            labelStyle={{alignSelf: "center"}}
+            style={{textAlign: "center"}}
+            value={ formData.day }
+            disabled
+          />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('month')}
+        >
+          <Input
+            label="Mes"
+            placeholder="MM"
+            containerStyle={{alignSelf: "center"}}
+            labelStyle={{alignSelf: "center"}}
+            style={{textAlign: "center"}}
+            value={ formData.month }
+            disabled
+          />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('year')}
+        >
+          <Input
+            label="Año"
+            placeholder="AAAA"
+            containerStyle={{alignSelf: "center"}}
+            labelStyle={{alignSelf: "center"}}
+            style={{textAlign: "center"}}
+            value={ formData.year }
+            disabled
+          />
+        </TouchableOpacity>
+      </View>
+      <Button
+        title="Cambiar Fecha de Nacimiento"
         containerStyle={styles.buttonContainer} 
         buttonStyle={styles.buttonStyle}
-        textStyle={{color: "white"}}
+        onPress={updateAge}
       />
+      <BottomSheet
+        isVisible={bottomSheetVisible}
+        setIsVisible={setBottomSheetVisible}
+      >
+        {renderComponent}
+      </BottomSheet>
     </View>
   );
 };
@@ -68,5 +159,12 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     backgroundColor: getColor("buttonColor"),
+  },
+  touchableStyle: {
+    backgroundColor: getColor("cardColor"),
+    width: "30%",
+  },
+  listItemContainerStyle: {
+    marginBottom: "1%",
   },
 });

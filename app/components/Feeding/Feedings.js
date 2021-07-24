@@ -29,16 +29,6 @@ const Feedings = ({ user }) => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const [countAd, setCountAd] = useState(0);
 
-  // let countDate = new Date().getTime();
-  // let myFunc = setInterval(() => {
-  //   let countStop = new Date().getTime();
-  //   let timeLeft = countStop - countDate;
-  //   let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //   let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-  //   let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-  //   console.log(hours, minutes, seconds)
-  // }, 1000);
-
   const getTotalData = async () => {
     await getTotalFeeding("day")
       .then((response) => {
@@ -110,17 +100,18 @@ const Feedings = ({ user }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.containerFeedingDiary}>
+    <View style={{flex: 1}}>
+      <ScrollView contentContainerStyle={styles.containerFeedingDiary}>
       <View style={styles.viewContainer}>
       <View style={styles.viewSwitch}>
         <Text>Fórmula Láctea</Text>
         <Switch
           trackColor={{
-            false: "rgba(60,72,88, 0.4)",
-            true: "rgba(60,72,88, 0.7)",
+            false: getColor("switchColor"),
+            true: getColor("switchColor"),
           }}
-          thumbColor={isEnabled ? "#9E99FF" : "#B9AAFF"}
-          ios_backgroundColor="#3e3e3e"
+          thumbColor={getColor("buttonColor")}
+          ios_backgroundColor={getColor("switchColor")}
           onValueChange={toggleSwitch}
           value={isEnabled}
         />
@@ -198,10 +189,10 @@ const Feedings = ({ user }) => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
-      <Ads />
       </View>
-    </ScrollView>
-
+      </ScrollView>
+      <Ads />
+    </View>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import { Button, Input, Icon } from "react-native-elements";
 import { loginService } from "../../services/auth/login.service";
 import { validateEmail, validateEmptyForm } from "../../utils/validations";
@@ -39,16 +39,26 @@ const Login = ({ setLogin }) => {
 
   return (
     <View style={styles.loginContainer}>
+      <Image 
+          resizeMode='center'
+          style={{ width: Dimensions.get("window").width * 0.5, height: Dimensions.get("window").height * 0.25, alignSelf: "center", marginTop: 15}}
+          source={require('../../../assets/logoWithe.png')} 
+      />
       <View>
-        <Text style={styles.welcomeText}>Bienvenido!</Text>
+        <Text style={styles.welcomeText}>Bienvenido</Text>
       </View>
       <View style={styles.inputButtonContainer}>
         <Input
           containerStyle={styles.input}
           inputStyle={styles.inputStyle}
           label="Correo"
+          labelStyle={{ color: 'white'}}
           rightIconContainerStyle={styles.rightIcon}
-          rightIcon={() => <Icon type="material-community" name="email" />}
+          rightIcon={{
+            type: 'material-community',
+            name: 'email',
+            color: 'white'
+          }}
           onChange={(e) =>
             setFormData({ ...formData, email: e.nativeEvent.text })
           }
@@ -59,12 +69,13 @@ const Login = ({ setLogin }) => {
           password={true}
           secureTextEntry={showPassword ? false : true}
           label="Contraseña"
+          labelStyle={{ color: 'white'}}
           rightIconContainerStyle={styles.rightIcon}
           rightIcon={{
             type: "material-community",
             name: showPassword ? "eye-off-outline" : "eye-outline",
-            opacity: 0.5,
             onPress: () => setShowPassword(!showPassword),
+            color: 'white'
           }}
           onChange={(e) =>
             setFormData({ ...formData, password: e.nativeEvent.text })
@@ -99,23 +110,25 @@ const styles = StyleSheet.create({
   loginContainer: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#A0C4FF",
+    backgroundColor: "rgba(43, 95, 159, 1)",
   },
   welcomeText: {
     color: "#FFFFFF",
-    fontSize: 35,
+    fontSize: 30,
+    marginTop: "20%",
   },
   inputButtonContainer: {
     width: "90%",
     alignItems: "center",
   },
   input: {
-    marginTop: "10%",
+    marginTop: "7%",
+    width: "75%"
   },
   button: {
-    width: "90%",
+    width: "75%",
   },
   touchableStyle: {
     padding: "3%",
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   rightIcon: {
-    opacity: 0.3,
+    opacity: 0.5,
   },
   errorStyle: {
     marginTop: "3%",

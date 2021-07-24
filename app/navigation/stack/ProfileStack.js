@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, Image } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Profile from "../../screen/profile/Profile";
 import { getColor } from "../../utils/colors";
@@ -19,12 +19,18 @@ const ProfileStack = ({ setLogin, user, setReloadProfileInfo }) => {
           />
         )}
         options={{
+          headerRight: () => (
+            <Image 
+            style={styles.iconStyle}
+            source={require('../../../assets/iconApp.png')} 
+          />
+          ),
           headerTitle: () => (
-            <Text style={styles.headerTitle}>{user.name}</Text>
+            <Text style={styles.headerTitle}>Perfil</Text>
           ),
           headerStyle: {
             backgroundColor: getColor("headerBackgroundColor"),
-            height: Dimensions.get("screen").height * .14,
+            height: Dimensions.get("screen").height * .15,
             elevation: 0,
             shadowColor: "transparent",
           },
@@ -38,7 +44,7 @@ export default ProfileStack;
 
 const styles = StyleSheet.create({
   headerTitle: {
-    fontSize: 20,
+    fontSize: 23,
     paddingTop: 20,
     paddingLeft: 20,
     color: getColor("headerText"),
@@ -46,4 +52,9 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     color: getColor("headerText"),
   },
+  iconStyle: {
+    width: Dimensions.get("screen").height * .065,
+    height: Dimensions.get("screen").height * .065,
+    marginRight: 40
+  }
 });

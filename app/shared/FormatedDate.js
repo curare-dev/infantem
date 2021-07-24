@@ -24,10 +24,11 @@ const days = [
 
 export const formatedDate = () => {
     let date = new Date();
+    let month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
     let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
     let hrs = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
     let mins = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
-    return `${date.getFullYear()}-${date.getMonth()+1}-${day}T${hrs}:${mins}:00.000Z`;
+    return `${date.getFullYear()}-${month}-${day}T${hrs}:${mins}:00.000Z`;
 }
 
 export const formatedUTCDate = (l) => {

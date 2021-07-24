@@ -4,10 +4,13 @@ import { Input, Button } from "react-native-elements";
 import { getColor } from "../../../utils/colors";
 import { postfeeding } from "../../../services/feeding/feeding.service";
 import { formatedDate } from "../../../shared/FormatedDate";
+import { hours } from "../../../utils/date";
 
 const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [renderComponent, setRenderComponent] = useState(null);
   let [mins, setMins] = useState(null);
   let [hrs, setHrs] = useState(null);
 
@@ -35,20 +38,36 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
     }
   };
 
+  const handleTouch = (input) => {
+    switch (input) {
+      case 'hrs':
+        setRenderComponent(hours.map( v => console.log(v)))
+      break;
+      case 'hrs':
+        
+      break;
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.secViewInput}>
-        <Input 
-          style={styles.input} 
-          label="Horas"
-          labelStyle={styles.inputA}
-          keyboardType="numeric"
-          onChange={(e) => {
-            let hrsInput = e.nativeEvent.text * 3600
-            setHrs(hrsInput);
-          }} 
-          placeholder="00"
-        />
+        <TouchableOpacity 
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('hrs')}
+        >
+          <Input 
+            style={styles.input} 
+            label="Horas"
+            labelStyle={styles.inputA}
+            keyboardType="numeric"
+            onChange={(e) => {
+              let hrsInput = e.nativeEvent.text * 3600
+              setHrs(hrsInput);
+            }} 
+            placeholder="00"
+          />
+        </TouchableOpacity>
         <Input 
           style={styles.input} 
           label="Minutos" 

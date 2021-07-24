@@ -111,7 +111,8 @@ const Dreamings = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.containerDreamingDiary}>
+    <View style={{flex: 1}}>
+      <ScrollView contentContainerStyle={styles.containerDreamingDiary}>
       <View style={styles.viewContainer}>
       <Timer
         setTime={setTime}
@@ -181,9 +182,10 @@ const Dreamings = () => {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
       </Modal>
-      <Ads />
       </View>
-    </ScrollView>
+      </ScrollView>
+      <Ads />
+    </View>
   );
 };
 

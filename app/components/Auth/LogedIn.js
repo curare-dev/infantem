@@ -53,15 +53,19 @@ const LogedIn = ({ setLogin }) => {
         activeTintColor: getColor("activeIcon"),
         inactiveBackgroundColor: getColor("inactiveBackgroundColor"),
         activeBackgroundColor: getColor("activeBackgroundColor"),
+        style: {
+          height: '5%'
+        }
       }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => screenOptions(route, color),
       })}
+
     >
       <Tab.Screen
         name="feeding"
         children={() => <FeedingStack user={user} />}
-        options={{ title: "Alimentacion" }}
+        options={{ title: "Alimentación" }}
       />
       <Tab.Screen
         name="dreaming"
@@ -75,7 +79,7 @@ const LogedIn = ({ setLogin }) => {
       />
       <Tab.Screen
         name="pediatrician"
-        children={() => <PediatricianStack />}
+        component={PediatricianStack}
         options={{ title: "Pediatras" }}
       />
       <Tab.Screen

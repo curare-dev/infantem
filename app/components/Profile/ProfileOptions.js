@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Share } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Share, Image } from "react-native";
 import { getColor } from "../../utils/colors";
 import { BottomSheet, Button, Icon, ListItem } from "react-native-elements";
 import Modal from "../../shared/Modal";
@@ -183,7 +183,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
             toggleModal();
           }}
         >
-          <Text style={styles.title}>Cambiar Edad</Text>
+          <Text style={styles.title}>Cambiar Fecha de Nacimiento</Text>
           <Text style={styles.subtitle}>
             {user.age === undefined ? "Colocar Edad" : user.age}
           </Text>
@@ -217,7 +217,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
           style={styles.touchableStyle}
           onPress={() => setVisible(true)}
         >
-          <Text style={styles.title}>Cambiar Medida</Text>
+          <Text style={styles.title}>Cambiar Unidad de Medida</Text>
           <Text style={styles.subtitle}>
             {user.feedingType === "oz"
               ? "Onzas"
@@ -240,7 +240,7 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
         <TouchableOpacity
           style={[styles.touchableStyle, styles.versionButton]}
         >
-          <Text style={styles.title}>Versión: Gratuita</Text>
+          <Text style={styles.title}>Versión: </Text>
           <Text style={[styles.upgradeText]}>
             {user.suscription === "free"
               ? "Gratuita"
@@ -258,6 +258,10 @@ const ProfileOptions = ({ setLogin, user, setReloadProfileInfo }) => {
           getComponent("closeSession");
           toggleModal();
         }}
+      />
+      <Image 
+        style={{width: 100, height: 100, alignSelf: "center", marginBottom: 20}}
+        source={require('../../../assets/logo.png')} 
       />
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}

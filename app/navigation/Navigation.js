@@ -3,37 +3,67 @@ import { NavigationContainer } from "@react-navigation/native";
 import { verifyTokenId } from "../utils/verifyTokenId";
 import LogedIn from "../components/Auth/LogedIn";
 import NotLogedIn from "../components/Auth/NotLogedIn";
-import Loading from "../shared/Loading";
+import { Asset } from 'expo-asset';
+import AppLoading from 'expo-app-loading';
 
 function Navigation() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [login, setLogin] = useState(false);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setLogin(false);
-    verifyTokenId()
+  const [component, setComponent] = useState(null);
+  const [isReady, setReady] = useState(false);
+
+  const tokenId = async () => {
+    await verifyTokenId()
       .then((response) => {
         if (!response) {
-          setLoading(false);
-          setIsLoggedIn(false);
+          getComponent(3);
         } else {
-          setLoading(false);
-          setIsLoggedIn(true);
+          getComponent(2);
         }
       })
       .catch((error) => console.log(error));
+  }
+
+  const  _cacheResourcesAsync = async () => {
+    const images = [require('../../assets/splash.png')];
+
+    const cacheImages = images.map(image => {
+      return Asset.fromModule(image).downloadAsync();
+    }); 
+    return Promise.all(cacheImages);
+  }
+
+  useEffect(() => {
+    setLogin(false);
+    tokenId();
   }, [login]);
 
+  const getComponent = (component) => {
+    switch (component) {
+      case 2: 
+        setComponent (
+            <LogedIn setLogin={setLogin} />
+          )
+        break; 
+      case 3: 
+        setComponent (
+            <NotLogedIn setLogin={setLogin} />
+          )
+        break;
+    }
+  }
+
   return (
-    <NavigationContainer>
-      {loading && <Loading text="Cargando" />}
-      {isLoggedIn ? (
-        <LogedIn setLogin={setLogin} />
-      ) : (
-        <NotLogedIn setLogin={setLogin} />
-      )}
-    </NavigationContainer>
-  );
+    isReady === false ? ( 
+      <AppLoading
+        startAsync={_cacheResourcesAsync}
+        onFinish={() => setReady(true)}
+        onError={console.warn}
+      />) 
+      : (
+      <NavigationContainer>
+        {component}
+      </NavigationContainer>)
+ );
 }
 
 export default Navigation;

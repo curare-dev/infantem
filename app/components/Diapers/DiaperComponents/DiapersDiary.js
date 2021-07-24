@@ -22,7 +22,6 @@ const DiapersDiary = ({ reloadData, setReloadData }) => {
           setShowData(
             response.map((l, i) => {
               setIsLoading(false);
-              console.log(l);
               return (
                 <ListItem
                   key={i}

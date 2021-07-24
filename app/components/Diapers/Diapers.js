@@ -151,7 +151,8 @@ const Diapers = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.diaperContainer}>
+    <View style={{flex: 1}}>
+      <ScrollView contentContainerStyle={styles.diaperContainer}>
       <View>
       <TouchableOpacity
         style={styles.touchableStyle}
@@ -268,37 +269,38 @@ const Diapers = () => {
       </View>
       </View>
       <View style={styles.bottom}>
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
-        {renderComponent}
-      </Modal>
-      <BottomSheet isVisible={visible}>
-        {list.map((l, i) => {
-          return (
-            <ListItem
-              key={i}
-              containerStyle={l.containerStyle}
-              onPress={() => {
-                setTitle(l.title);
-                setSubject(l.subject);
-                setVisible(false);
-              }}
-            >
-              <ListItem.Content>
-                <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          );
-        })}
-      </BottomSheet>
-      <BottomSheet
-        isVisible={bottomSheetVisible}
-        setIsVisible={setBottomSheetVisible}
-      >
-        {renderComponent}
-      </BottomSheet>
-      <Ads />
+        <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
+          {renderComponent}
+        </Modal>
+        <BottomSheet isVisible={visible}>
+          {list.map((l, i) => {
+            return (
+              <ListItem
+                key={i}
+                containerStyle={l.containerStyle}
+                onPress={() => {
+                  setTitle(l.title);
+                  setSubject(l.subject);
+                  setVisible(false);
+                }}
+              >
+                <ListItem.Content>
+                  <ListItem.Title style={l.titleStyle}>{l.title}</ListItem.Title>
+                </ListItem.Content>
+              </ListItem>
+            );
+          })}
+        </BottomSheet>
+        <BottomSheet
+          isVisible={bottomSheetVisible}
+          setIsVisible={setBottomSheetVisible}
+        >
+          {renderComponent}
+        </BottomSheet>
       </View>
-    </ScrollView>
+      </ScrollView>
+      <Ads />
+    </View>
   );
 };
 

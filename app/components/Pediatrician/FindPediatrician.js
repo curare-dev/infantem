@@ -3,6 +3,7 @@ import { StyleSheet, ScrollView, TouchableOpacity, View, Text } from "react-nati
 import { Icon, ListItem } from "react-native-elements";
 import { getPlaces, getUserLocation } from "../../services/maps/map";
 import Ads, { showAd } from "../../shared/Ads";
+import Loading from "../../shared/Loading";
 import Modal from "../../shared/Modal";
 import PediatricianPage from "./PediatricianPage";
 
@@ -12,10 +13,13 @@ const FindPediatrician = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
   const [countAd, setCountAd] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const userLocation = async () => {
+    // setIsLoading(true);
     await getUserLocation().then( response => {
       getPlaces(response.coords.latitude, response.coords.longitude).then( response => {
+        setIsLoading(false);
         setList(
           response.results.map((u, i) => {
             return (
@@ -63,6 +67,7 @@ const FindPediatrician = () => {
   }, [reload])
 
   return (
+    isLoading ? <Loading text="Cargando Lista de Pediatras"/> :    
     <View style={{flex: 1}}>
       <ScrollView>
         {list}
@@ -72,8 +77,6 @@ const FindPediatrician = () => {
       </ScrollView>
       <Ads />
     </View>
-
-    
   );
 };
 

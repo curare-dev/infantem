@@ -28,7 +28,7 @@ export const postDiaper = async (obj) => {
 export const getDiapers = async (type) => {
   let date = new Date();
   let year = date.getFullYear();
-  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth()}` : date.getMonth() + 1;
+  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
   let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   try {
     let userid = await SecureStore.getItemAsync("id");
@@ -101,7 +101,7 @@ export const deleteDiaper = async (obj) => {
 export const getTotalDiapers = async (type) => {
   let date = new Date();
   let year = date.getFullYear();
-  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth()}` : date.getMonth() + 1;
+  let month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
   let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
   try {
     let userid = await SecureStore.getItemAsync("id");

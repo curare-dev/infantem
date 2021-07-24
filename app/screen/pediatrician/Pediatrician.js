@@ -12,7 +12,7 @@ const Pediatrician = () => {
 };
 
 export default Pediatrician;
-console.log(getColor("Type"));
+
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,

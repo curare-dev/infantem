@@ -7,7 +7,7 @@ export default function Loading(props) {
   const { isVisible, text } = props;
   const dismissBackdrop = () => !isVisible;
   return (
-    <Overlay isVisible={isVisible} overlayStyle={styles.overlay}>
+    <Overlay isVisible={isVisible} backdropStyle={styles.backdrop} overlayStyle={styles.overlay}>
       <View style={styles.view}>
         <ActivityIndicator size="large" color={getColor("backgroundColor")} />
         {text && <Text style={styles.text}>{text}</Text>}
@@ -18,10 +18,9 @@ export default function Loading(props) {
 
 const styles = StyleSheet.create({
   overlay: {
-    height: "100%",
-    width: "100%",
+    height: "15%",
+    width: "60%",
     backgroundColor: getColor("headerBackgroundColor"),
-    opacity: 0.5,
   },
   view: {
     flex: 1,
@@ -33,4 +32,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     marginTop: 10,
   },
+  backdrop: {
+    opacity: 0
+  }
 });

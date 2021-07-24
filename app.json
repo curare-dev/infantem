@@ -1,14 +1,16 @@
 {
   "expo": {
-    "name": "infantem",
-    "slug": "infantem",
+    "name": "Infantem",
+    "slug": "Infantem",
     "version": "1.0.0",
     "orientation": "portrait",
+    "backgroundColor": "#FFFFFF",
     "icon": "./assets/icon.png",
+    "primaryColor": "#FFFFFF",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#FFFFFF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,7 +19,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": "./assets/icon.png",
+      "bundleIdentifier": "com.infantem.client"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +38,12 @@
       "package": "com.infantem.client",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6280479529367536~2562826848"
+      },
+      "icon": "./assets/icon.png",
+      "adaptativeIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundImage": "./assets/icon.png",
+        "backgroundColor": "#FFFFFF"
       }
     },
     "description": ""

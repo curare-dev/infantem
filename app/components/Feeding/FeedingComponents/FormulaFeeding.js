@@ -6,6 +6,7 @@ import { validateEmptyForm } from "../../../utils/validations";
 import { postfeeding } from "../../../services/feeding/feeding.service";
 import Modal from "../../../shared/Modal";
 import TimeForm from "../../../shared/TimeForm";
+import { formatedDate } from "../../../shared/FormatedDate";
 
 const FormulaFeeding = ({ setReloadData, user }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,10 +20,7 @@ const FormulaFeeding = ({ setReloadData, user }) => {
     formData.feedingType = user.feedingType;
     let dateTime = new Date();
     dateTime.setHours(time.hrs,time.mins,0);
-    let date = dateTime.getDate() < 10 ? `0${dateTime.getDate()}` : dateTime.getDate();
-    let hrs = dateTime.getHours() < 10 ? `0${dateTime.getHours()}` : dateTime.getHours();
-    let mins = dateTime.getMinutes() < 10 ? `0${dateTime.getMinutes()}` : dateTime.getMinutes();
-    formData.date = `${dateTime.getFullYear()}-${dateTime.getMonth()+1}-${date}T${hrs}:${mins}:00.000Z`;
+    formData.date = formatedDate();
     if (
       validateEmptyForm(formData.date) ||
       validateEmptyForm(formData.quantity) ||

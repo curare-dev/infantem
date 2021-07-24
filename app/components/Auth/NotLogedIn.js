@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Login from "../../screen/auth/Login";
 import Signup from "../../screen/auth/Signup";
 import { Icon } from "react-native-elements";
+import { getColor } from "../../utils/colors";
 
 const Tab = createBottomTabNavigator();
 
@@ -12,10 +13,13 @@ const NotLogedIn = ({ setLogin }) => {
     <Tab.Navigator
       initialRouteName="login"
       tabBarOptions={{
-        inactiveTintColor: "rgba(60,72,88, 0.4)",
-        activeTintColor: "rgba(60,72,88, 0.7)",
-        inactiveBackgroundColor: "#A0C4FF",
-        activeBackgroundColor: "#A0C4FF",
+        inactiveTintColor: getColor("inactiveIcon"),
+        activeTintColor: getColor("activeIcon"),
+        inactiveBackgroundColor: getColor("inactiveBackgroundColor"),
+        activeBackgroundColor: getColor("activeBackgroundColor"),
+        style: {
+          height: '5%'
+        }
       }}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color }) => screenOptions(route, color),

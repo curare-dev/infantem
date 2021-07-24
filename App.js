@@ -1,8 +1,8 @@
 import React from "react";
 import Navigation from "./app/navigation/Navigation";
-import { YellowBox } from "react-native";
+import { LogBox } from "react-native";
 
-YellowBox.ignoreWarnings(["Looks like", "Failed prop"]);
+LogBox.ignoreLogs(["Looks like", "Failed prop", "It appears"]);
 
 function App() {
   return <Navigation />;

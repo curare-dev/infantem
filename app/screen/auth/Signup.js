@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
 import { Button, Icon, Input } from "react-native-elements";
 
 import { validateEmail, validateEmptyForm } from "../../utils/validations";
@@ -53,6 +53,11 @@ const Signup = ({ setLogin }) => {
   return (
     <View style={styles.signUpContainer}>
       <View>
+        <Image 
+          resizeMode="center"
+          style={{ width: Dimensions.get("window").width * 0.50, height: Dimensions.get("window").height * 0.25, alignSelf: "center", marginTop: 15}}
+          source={require('../../../assets/logoWithe.png')} 
+        />
         <Text style={styles.registerTextHeader}>Registrate</Text>
       </View>
       <View style={styles.inputGroup}>
@@ -60,8 +65,14 @@ const Signup = ({ setLogin }) => {
           containerStyle={styles.inputStyleContainer}
           inputStyle={styles.inputStyle}
           label="Nombre del bebé"
+          labelStyle={styles.label}
           rightIconContainerStyle={styles.rightIcon}
-          rightIcon={() => <Icon type="material-community" name="account" />}
+          rightIcon={{
+            type: "material-community",
+            name: "account",
+            onPress: () => setShowPassword(!showPassword),
+            color: 'white'
+          }}
           onChange={(e) =>
             setFormData({ ...formData, name: e.nativeEvent.text })
           }
@@ -71,8 +82,14 @@ const Signup = ({ setLogin }) => {
           containerStyle={styles.inputStyleContainer}
           inputStyle={styles.inputStyle}
           label="Correo"
+          labelStyle={styles.label}
           rightIconContainerStyle={styles.rightIcon}
-          rightIcon={() => <Icon type="material-community" name="email" />}
+          rightIcon={{
+            type: "material-community",
+            name: "email",
+            onPress: () => setShowPassword(!showPassword),
+            color: 'white'
+          }}
           onChange={(e) =>
             setFormData({ ...formData, email: e.nativeEvent.text })
           }
@@ -84,12 +101,13 @@ const Signup = ({ setLogin }) => {
           password={true}
           secureTextEntry={showPassword ? false : true}
           label="Contraseña"
+          labelStyle={styles.label}
           rightIconContainerStyle={styles.rightIcon}
           rightIcon={{
             type: "material-community",
             name: showPassword ? "eye-off-outline" : "eye-outline",
-            opacity: 0.5,
             onPress: () => setShowPassword(!showPassword),
+            color: 'white'
           }}
           onChange={(e) =>
             setFormData({ ...formData, password: e.nativeEvent.text })
@@ -102,12 +120,13 @@ const Signup = ({ setLogin }) => {
           password={true}
           secureTextEntry={showRepeatPassword ? false : true}
           label="Confirmar Contraseña"
+          labelStyle={styles.label}
           rightIconContainerStyle={styles.rightIcon}
           rightIcon={{
             type: "material-community",
             name: showRepeatPassword ? "eye-off-outline" : "eye-outline",
-            opacity: 0.5,
             onPress: () => setShowRepeatPassword(!showRepeatPassword),
+            color: 'white'
           }}
           onChange={(e) =>
             setFormData({ ...formData, confirmPassword: e.nativeEvent.text })
@@ -139,23 +158,26 @@ const styles = StyleSheet.create({
   signUpContainer: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#A0C4FF",
+    backgroundColor: "rgba(43, 95, 159, 1)",
   },
   registerTextHeader: {
     color: "#FFFFFF",
-    fontSize: 35,
-    marginTop: "15%",
+    fontSize: 30,
+    marginTop: "10%",
+    marginBottom: "10%"
   },
   inputGroup: {
     width: "90%",
   },
   inputStyleContainer: {
-    marginBottom: "3%",
+    alignSelf: "center",
+    width: "75%",
+    marginTop: -20
   },
   buttonContainerStyle: {
-    width: "90%",
+    width: "70%",
   },
   inputStyle: {
     opacity: 0.9,
@@ -163,7 +185,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   rightIcon: {
-    opacity: 0.3,
+    opacity: 0.5,
   },
   errorStyle: {
     marginTop: "3%",
@@ -172,4 +194,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#F7FF0A",
   },
+  label: {
+    color: 'white'
+  }
 });

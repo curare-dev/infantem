@@ -10,7 +10,7 @@ import { validateEmptyForm } from "../../../utils/validations";
 import { formatedDate } from "../../../shared/FormatedDate";
 
 const BreastFeeding = ({ setReloadData }) => {
-  const [time, setTime] = useState(null);
+  const [time, setTime] = useState(null); 
   const [resetTimer, setResetTimer] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -30,8 +30,10 @@ const BreastFeeding = ({ setReloadData }) => {
         break;
     }
   };
+
   const submitBreastfeeding = () => {
     setIsLoading(true);
+    setResetTimer(false);
     if (validateEmptyForm(time) || time === 0) {
       setIsLoading(false);
       setError("El timer esta en 0");
@@ -46,9 +48,10 @@ const BreastFeeding = ({ setReloadData }) => {
           setResetTimer(true);
           setError("");
           setReloadData(true);
+          setTime(null);
         })
         .catch(() => {
-          setIsLoading(false);
+          setIsLoading(false);gfv
           setError("Error en el sistema");
         });
     }
@@ -75,6 +78,7 @@ const BreastFeeding = ({ setReloadData }) => {
         buttonStyle={styles.buttonStyle}
         onPress={submitBreastfeeding}
         loading={isLoading}
+        disabled={!time}
       />
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}
