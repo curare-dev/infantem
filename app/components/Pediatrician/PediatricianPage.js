@@ -31,7 +31,7 @@ const PediatricianPage = ({ pediatrician }) => {
         margin: "5%",
       }}>
         <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "bold", color: getColor("buttonColor"), textDecorationLine: "underline" }}>
-          Redireccionar al Mapa
+          Ver Mapa
         </Text>
       </TouchableOpacity>
       <Button

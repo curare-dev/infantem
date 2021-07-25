@@ -34,6 +34,7 @@ const Dreamings = () => {
   const [todayDataSecs, setTodayDataSecs] = useState(null);
   const [monthlyDataSecs, setMonthlyDataSecs] = useState(null);
   const [countAd, setCountAd] = useState(0);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
 
   const getComponent = (component) => {
     switch (component) {
@@ -102,6 +103,8 @@ const Dreamings = () => {
           setResetTimer(true);
           setError("Agregado");
           setReloadData(true);
+          setIsSubmitDisabled(false);
+
         })
         .catch((error) => {
           console.log("Error en Dreaming", error);
@@ -117,7 +120,7 @@ const Dreamings = () => {
       <Timer
         setTime={setTime}
         resetTimer={resetTimer}
-        setResetTimer={setResetTimer}
+        setIsSubmitDisabled={setIsSubmitDisabled}
       />
       <TouchableOpacity
         onPress={() => {
@@ -133,6 +136,7 @@ const Dreamings = () => {
         containerStyle={styles.buttonContainerStyle}
         buttonStyle={styles.buttonStyle}
         onPress={submitDreaming}
+        disabled={!isSubmitDisabled}
       />
       <View style={styles.touchableContainer}>
         <TouchableOpacity

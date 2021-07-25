@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Dimensions } from "react-native";
 import { StyleSheet, ScrollView, TouchableOpacity, View, Text } from "react-native";
 import { Icon, ListItem } from "react-native-elements";
 import { getPlaces, getUserLocation } from "../../services/maps/map";
@@ -14,14 +15,16 @@ const FindPediatrician = () => {
   const [renderComponent, setRenderComponent] = useState(null);
   const [countAd, setCountAd] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const userLocation = async () => {
-    // setIsLoading(true);
-    await getUserLocation().then( response => {
-      getPlaces(response.coords.latitude, response.coords.longitude).then( response => {
+    await getUserLocation().then( ({ coords }) => {
+      setIsLoading(true);
+      setError(null);
+      getPlaces(coords.latitude, coords.longitude).then( (response) => {
         setIsLoading(false);
         setList(
-          response.results.map((u, i) => {
+          response.map((u, i) => {
             return (
               <TouchableOpacity key={i} onPress={ async () => {
                 await setRenderComponent(
@@ -29,7 +32,7 @@ const FindPediatrician = () => {
                     uuid: u.place_id,
                     name: u.name,
                     ubicacion: u.vicinity,
-                    coordinates: u.geometry.location,
+                    coordinates: u.location,
                   }} />
                 );
                 setCountAd(countAd + 1);
@@ -55,9 +58,13 @@ const FindPediatrician = () => {
           })
         );
       }).catch( error => {
+        setIsLoading(false);
+        setError('Error al obtener pediatras');
         console.log("Error al traer a los pediatras: ", error);
       });
     }).catch( error => {
+      setIsLoading(false);
+      setError('Error al obtener ubicación');
       console.log("userLocation error: ", error);
     } );
   }
@@ -69,6 +76,7 @@ const FindPediatrician = () => {
   return (
     isLoading ? <Loading text="Cargando Lista de Pediatras"/> :    
     <View style={{flex: 1}}>
+      { error && (<View style={{ flex: 1}}><Text style={{ position:'absolute', top: '50%', textAlign: 'center', fontSize: Dimensions.get('window').width * 0.09 }}>{error}</Text></View>)}
       <ScrollView>
         {list}
         <Modal isVisible={isVisible} setIsVisible={setIsVisible}>

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Dimensions, Animated } from "react-native";
 import {
   StyleSheet,
   Text,
@@ -8,87 +9,111 @@ import {
 import { Icon } from "react-native-elements";
 import { getColor } from "../utils/colors";
 
-const Timer = ({resetTimer, setResetTimer, setTime}) => {
-  let [initialTime, setInitialTime] = useState(null);
-  let [stopTime, setStopTime] = useState(null);
-  const [totalTime, setTotalTime] = useState(null);
+const Timer = ({resetTimer, setTime, setIsSubmitDisabled}) => {
   const [isPlayDisabled, setIsPlayDisabled] = useState(false);
   const [isStopDisabled, setIsStopDisabled] = useState(true);
-  const [reload, setReload] = useState(false);
   const [count, setCount] = useState(null);
-  const [displayTime, setDisplayTime] = useState({
-    hrs: null,
-    mins: null,
-    secs: null
-  });
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [displayTime, setDisplayTime] = useState(null);
+  let startTime;
+  let elapsedTime = 0;
+
+  useEffect(()=>{
+    resetTimer && setDisplayTime('00:00:00');
+  }, [resetTimer]);
+
+  function timeToString(time) {
+    let diffInHrs = time / 3600000;
+    let hh = Math.floor(diffInHrs);
+    let diffInMin = (diffInHrs - hh) * 60;
+    let mm = Math.floor(diffInMin);
+    let diffInSec = (diffInMin - mm) * 60;
+    let ss = Math.floor(diffInSec);
+    let formattedHH = hh.toString().padStart(2, "0");
+    let formattedMM = mm.toString().padStart(2, "0");
+    let formattedSS = ss.toString().padStart(2, "0");
+    setTime(hh * 60 * 60 + mm * 60 + ss);
+    return `${formattedHH}:${formattedMM}:${formattedSS}`;
+  }
 
   let play = () => {
-    setCount(setInterval(()=>{
-      let date = new Date();
-      setDisplayTime({
-        hrs: date.getHours(),
-        mins: date.getMinutes(),
-        secs: date.getSeconds()
-      })
+    animation();
+    startTime = Date.now() - elapsedTime;
+    setCount(setInterval(function printTime() {
+      elapsedTime = Date.now() - startTime;
+      setDisplayTime(timeToString(elapsedTime));
     }, 100));
   };
 
   let stop = () => {
     clearInterval(count);
+    elapsedTime = 0;
+    fadeAnim.setValue(1);
+    fadeAnim.stopAnimation();
   }
 
-  useEffect(() => {
-    if (resetTimer) getTime('restart');
-    setReload(false);
-    if(initialTime && stopTime){
-      let hrsT = stopTime.hrs - initialTime.hrs;
-      let minT = stopTime.mins - initialTime.mins;
-      let secT = Math.abs(stopTime.secs - initialTime.secs);
-      console.log(hrsT, minT, secT);
-      setTime(hrsT * 60 * 60 + minT * 60 + secT);
-      setTotalTime(`Tiempo total: ${hrsT < 10 ? `0${hrsT}` : hrsT}:${minT < 10 ? `0${minT}` : minT}:${secT < 10 ? `0${secT}` : secT}`);
-      setResetTimer(false);
-    }
-  }, [reload, resetTimer])
+  const animation = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true
+        })
+      ]),
+    ).start();
+  }
 
   const getTime = async (type) => {
     switch (type) {
       case "play":
-        let dateS = new Date();
         setIsPlayDisabled(true);
         setIsStopDisabled(false);
-        setStopTime(null);
-        setTotalTime(null);
-        setInitialTime({
-          hrs: dateS.getHours(),
-          mins: dateS.getMinutes(),
-          secs: dateS.getSeconds()
-        });
+        setIsSubmitDisabled(false);
       break;
       case "stop":
-        let dateE = new Date();
         setIsPlayDisabled(false);
         setIsStopDisabled(true);
-        setStopTime({
-          hrs: dateE.getHours(),
-          mins: dateE.getMinutes(),
-          secs: dateE.getSeconds()
-        });
-        setReload(true);
-      break;
-      case "restart":
-        console.log('reiniciando');
-        setInitialTime( null );
-        setStopTime( null );
-        setTotalTime( null );
-        setTime( null );
-        setResetTimer( false );
+        setIsSubmitDisabled(true);
       break;
     }
   }
 
   return (
     <View>
+      <View style={{ position: 'relative' }}>
+        <Animated.View style={{
+          opacity: fadeAnim,
+          borderWidth: Dimensions.get('window').width * 0.01,
+          borderColor: getColor("headerBackgroundColor"),
+          width: Dimensions.get("window").width / 3,
+          height: Dimensions.get("window").width / 3,
+          borderRadius: Dimensions.get("window").width / 3,
+          alignItems: "center",
+          marginBottom: 10,
+          flexDirection: "row",
+          justifyContent: "space-around",
+          textAlign: "center",
+          textAlignVertical: "center",
+          alignSelf: "center",
+        }}>
+      </Animated.View>
+      <Text style={{ 
+          position: 'absolute',  
+          top: '40%', 
+          left: '41.5%', 
+          fontSize: Dimensions.get('window').width * 0.04,
+          fontWeight: 'bold'
+        }}>
+          {displayTime ? displayTime : '00:00:00'}
+      </Text>
+      </View>
+
       <View style={styles.playPause}> 
         <TouchableOpacity disabled={isPlayDisabled} onPress={()=>{
           play();
@@ -112,14 +137,6 @@ const Timer = ({resetTimer, setResetTimer, setTime}) => {
           <Icon size={50} color={isStopDisabled ? 'gray' : getColor('headerBackgroundColor')} type="material-community" name="stop" />
         </TouchableOpacity>
       </View>
-      <View style={styles.playPauseTime}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold'}}>
-          {displayTime.hrs || displayTime.mins || displayTime.secs ? `${ displayTime.hrs > 12 ? `${displayTime.hrs - 12 < 10 ? `0${displayTime.hrs - 12}` : displayTime.hrs - 12}` : displayTime.hrs < 10 ? `0${displayTime.hrs}` : displayTime.hrs}:${displayTime.mins < 10 ? `0${displayTime.mins}` : displayTime.mins}:${displayTime.secs < 10 ? `0${displayTime.secs}` : displayTime.secs}` : ``}
-        </Text>
-      </View>
-      <View style={{marginTop: "2%"}}>
-      {totalTime && <Text style={{textAlign: "center", marginTop: "1%", fontSize: 20}}>{totalTime}</Text>}
-      </View>
       <View>
       </View>
     </View>
@@ -129,6 +146,20 @@ const Timer = ({resetTimer, setResetTimer, setTime}) => {
 export default Timer;
 
 const styles = StyleSheet.create({
+  circleButton: {
+    borderWidth: 10,
+    borderColor: getColor("headerBackgroundColor"),
+    width: Dimensions.get("window").width / 3,
+    height: Dimensions.get("window").width / 3,
+    borderRadius: Dimensions.get("window").width / 3,
+    alignItems: "center",
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    textAlign: "center",
+    textAlignVertical: "center",
+    alignSelf: "center",
+  },
   playPause: {
     flexDirection: "row",
     justifyContent: "space-evenly",

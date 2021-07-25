@@ -17,6 +17,7 @@ const BreastFeeding = ({ setReloadData }) => {
   const toggleModal = () => setIsVisible(true);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
 
   const getComponent = (component) => {
     switch (component) {
@@ -49,6 +50,7 @@ const BreastFeeding = ({ setReloadData }) => {
           setError("");
           setReloadData(true);
           setTime(null);
+          setIsSubmitDisabled(false);
         })
         .catch(() => {
           setIsLoading(false);gfv
@@ -61,7 +63,7 @@ const BreastFeeding = ({ setReloadData }) => {
       <Timer
         setTime={setTime}
         resetTimer={resetTimer}
-        setResetTimer={setResetTimer}
+        setIsSubmitDisabled={setIsSubmitDisabled}
       />
       <TouchableOpacity
         onPress={() => {
@@ -78,7 +80,7 @@ const BreastFeeding = ({ setReloadData }) => {
         buttonStyle={styles.buttonStyle}
         onPress={submitBreastfeeding}
         loading={isLoading}
-        disabled={!time}
+        disabled={!isSubmitDisabled}
       />
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         {renderComponent}

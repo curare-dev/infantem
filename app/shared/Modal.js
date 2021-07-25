@@ -3,8 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Overlay } from "react-native-elements";
 import { getColor } from "../utils/colors";
 
-const Modal = (props) => {
-  const { isVisible, setIsVisible, children } = props;
+const Modal = ({ isVisible, setIsVisible, children }) => {
   const closeModal = () => setIsVisible(false);
   return (
     <Overlay

@@ -29,8 +29,14 @@ const FormulaFeeding = ({ setReloadData, user }) => {
       setIsLoading(false);
       setError("Todos los campos son obligatorios");
     } else {
-      console.log("FORMULA FEEDING", formData);
-      await postfeeding(formData)
+      if (formData.feedingType === 'ml' && Number(formData.quantity) > 1000 ) {
+        setIsLoading(false);
+        setError('Por favor, coloca una cantidad menor a 1000 ml');
+      } else if (formData.feedingType === 'oz' && Number(formData.quantity) > 15){
+        setIsLoading(false);
+        setError('Por favor, coloca una cantidad menor a 15 oz');
+      } else {
+        await postfeeding(formData)
         .then((response) => {
           if (response) {
             setIsLoading(false);
@@ -43,6 +49,7 @@ const FormulaFeeding = ({ setReloadData, user }) => {
           setIsLoading(false);
           setError("Error en el sistema");
         });
+      }
     }
   };
 

@@ -22,6 +22,7 @@ export const year = () => {
 export const hours = () => {
     let arr = [];
     for( let i = 1; i <= 12; i++ ) arr.push(i);
+    console.log(arr);
     return arr;
 }
 

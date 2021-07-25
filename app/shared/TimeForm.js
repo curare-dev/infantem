@@ -1,44 +1,90 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { ButtonGroup, Input } from 'react-native-elements'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { ButtonGroup, Input, BottomSheet, ListItem } from 'react-native-elements'
 import { getColor } from '../utils/colors';
+import { hours, minutes } from "./../utils/date";
 
 const TimeForm = ({setTime, setIsVisible}) => {
     const [error, setError] = useState(null);
-    const [dateTime, setDateTIme] = useState({});
+    const [dateTime, setDateTime] = useState({});
+    const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+    const [renderComponent, setRenderComponent] = useState(null);
+
+    const handleTouch = (input) => {
+        setBottomSheetVisible(true);
+        switch (input) {
+          case 'hrs':
+            setRenderComponent(hours().map( (v, i) => {
+              return (
+                <ListItem
+                key={i}
+                onPress={ () => {
+                setDateTime({
+                    ...dateTime,
+                    hrs: v
+                });
+                  setBottomSheetVisible(false)
+                }}
+                >
+                <ListItem.Content>
+                  <ListItem.Title style={{textAlign: 'center'}}>{v}</ListItem.Title>
+                </ListItem.Content>
+              </ListItem>
+              )
+            }))
+          break;
+          case 'mins':
+            setRenderComponent(minutes().map( (v, i) => {
+              return (
+                <ListItem
+                key={i}
+                onPress={ () => {
+                setDateTime({
+                    ...dateTime,
+                    mins: v
+                });
+                  setBottomSheetVisible(false)
+                }}
+                >
+                <ListItem.Content>
+                  <ListItem.Title>{v}</ListItem.Title>
+                </ListItem.Content>
+              </ListItem>
+              )
+            }))
+          break;
+        }
+    }
+      
     return (
         <View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "75%", alignSelf: "center" }}>
-                <Input
-                    label="Hora"
-                    placeholder="00"
-                    keyboardType="numeric"
-                    onChange={(e) => {
-                        console.log("Hora: ", e.nativeEvent.text);
-                        setDateTIme({
-                            ...dateTime,
-                            hrs: e.nativeEvent.text
-                        });
-                    }}
-                    containerStyle={{width: "50%", alignSelf: "center"}}
-                    inputStyle={{textAlign: "center"}}
-                    labelStyle={{textAlign: "center"}}
-                />
-                <Input 
-                    label="Minutos"
-                    placeholder="00"
-                    keyboardType="numeric"
-                    onChange={(e) => {
-                        console.log("Hora: ", e.nativeEvent.text);
-                        setDateTIme({
-                            ...dateTime,
-                            mins: e.nativeEvent.text
-                        });
-                    }}
-                    containerStyle={{width: "50%", alignSelf: "center"}}
-                    inputStyle={{textAlign: "center"}}
-                    labelStyle={{textAlign: "center"}}
-                />
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignSelf: "center" }}>
+                <TouchableOpacity           
+                    style={styles.touchableStyle}
+                    onPress={() => handleTouch('hrs')}
+                >
+                    <Input
+                        label="Hora"
+                        placeholder="00"
+                        inputStyle={{textAlign: "center"}}
+                        labelStyle={{textAlign: "center"}}
+                        value={ dateTime.hrs ? `${dateTime.hrs}` : '00' }
+                        disabled
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity           
+                    style={styles.touchableStyle}
+                    onPress={() => handleTouch('mins')}
+                >
+                    <Input 
+                        label="Minutos"
+                        placeholder="00"
+                        inputStyle={{textAlign: "center"}}
+                        labelStyle={{textAlign: "center"}}
+                        value={ dateTime.mins ? `${dateTime.mins}` : '00' }
+                        disabled
+                    />
+                </TouchableOpacity>
             </View>
             <Text style={styles.errorStyle}>{error}</Text>
             <ButtonGroup 
@@ -67,6 +113,12 @@ const TimeForm = ({setTime, setIsVisible}) => {
                 buttonStyle={styles.buttonStyle}
                 textStyle={{color: "white"}}
             />
+            <BottomSheet
+                isVisible={bottomSheetVisible}
+                setIsVisible={setBottomSheetVisible}
+            >
+                {renderComponent}
+            </BottomSheet>
         </View>
     )
 }
@@ -88,5 +140,9 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 15,
         color: "red",
+    },
+    touchableStyle: {
+        backgroundColor: getColor("cardColor"),
+        width: "40%",
     },
 })

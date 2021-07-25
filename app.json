@@ -40,7 +40,7 @@
         "googleMobileAdsAppId": "ca-app-pub-6280479529367536~2562826848"
       },
       "icon": "./assets/icon.png",
-      "adaptativeIcon": {
+      "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"

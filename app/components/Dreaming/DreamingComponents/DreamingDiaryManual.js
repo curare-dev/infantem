@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { Input, Button } from "react-native-elements";
+import { Input, Button, BottomSheet, ListItem } from "react-native-elements";
 import { getColor } from "../../../utils/colors";
 import { postDreaming } from "../../../services/dreaming/dreaming.service";
 import { formatedDate } from "../../../shared/FormatedDate";
+import { hours, minutes } from "../../../utils/date";
+
 
 const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [renderComponent, setRenderComponent] = useState(null);
   let [mins, setMins] = useState(null);
   let [hrs, setHrs] = useState(null);
 
@@ -36,31 +40,75 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
     }
   };
 
+  const handleTouch = (input) => {
+    setBottomSheetVisible(true);
+    switch (input) {
+      case 'hrs':
+        setRenderComponent(hours().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setHrs(v * 3600 )
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title style={{textAlign: 'center'}}>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }))
+      break;
+      case 'mins':
+        setRenderComponent(minutes().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setMins(v * 60 )
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }))
+      break;
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.secViewInput}>
-        <Input 
-          style={styles.input} 
-          label="Horas"
-          labelStyle={styles.inputA}
-          keyboardType="numeric"
-          onChange={(e) => {
-            let hrsInput = e.nativeEvent.text * 3600
-            setHrs(hrsInput);
-          }} 
-          placeholder="00"
-        />
-        <Input 
-          style={styles.input} 
-          label="Minutos" 
-          labelStyle={styles.inputB}
-          keyboardType="numeric"
-          onChange={(e) => {
-            let minsInput =  e.nativeEvent.text * 60
-            setMins(minsInput);
-          }} 
-          placeholder="00"
-        /> 
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('hrs')}
+        >
+          <Input 
+            style={styles.input} 
+            label="Horas"
+            labelStyle={styles.input}
+            value={ hrs ? `${hrs / 3600 < 10 ? `0${hrs / 3600}`: hrs / 3600}` : '00' }
+            placeholder="00"
+            disabled
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('mins')}
+        >
+          <Input 
+            style={styles.input} 
+            label="Minutos" 
+            labelStyle={styles.input}
+            value={ mins ? `${mins / 60 < 10 ? `0${mins / 60}`: mins / 60}` : '00' }
+            placeholder="00"
+            disabled
+          /> 
+        </TouchableOpacity>
       </View>
       <Text style={styles.errorStyle}>{error}</Text>
       <Button
@@ -68,6 +116,12 @@ const DreamingDiaryManual = ({ setReloadData, setIsVisible }) => {
         onPress={submitDreamingManual}
         buttonStyle={styles.buttonStyle}
       />
+      <BottomSheet
+        isVisible={bottomSheetVisible}
+        setIsVisible={setBottomSheetVisible}
+      >
+        {renderComponent}
+      </BottomSheet>
     </View>
   );
 };
@@ -90,9 +144,15 @@ const styles = StyleSheet.create({
   secViewInput:{
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "40%",
   },
   container: {
     alignSelf: "center"
+  },
+  touchableStyle: {
+    backgroundColor: getColor("cardColor"),
+    width: "40%",
+  },
+  input: {
+    textAlign: 'center'
   }
 });

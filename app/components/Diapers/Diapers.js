@@ -178,13 +178,17 @@ const Diapers = () => {
           <Text style={[styles.title]}>{countDiaper}</Text>
           <Text style={styles.subtitle}>{title ? `${title}` : ""}</Text>
         </View>
-        <Icon
-          type="material-community"
-          name="plus"
-          iconStyle={[styles.bigIcon]}
-          opacity={0.7}
-          onPress={addDiaper}
-        />
+        {countDiaper >= 10 ? (
+          <Text></Text>
+        ) : (
+          <Icon
+            type="material-community"
+            name="plus"
+            iconStyle={[styles.bigIcon]}
+            opacity={0.7}
+            onPress={addDiaper}
+          />
+        )}
       </View>
       {error === null ? null : <Text style={styles.errorStyle}>{error}</Text>}
       <Button

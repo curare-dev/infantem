@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { Input, Button } from "react-native-elements";
+import { Input, Button, ListItem, BottomSheet } from "react-native-elements";
 import { getColor } from "../../../utils/colors";
 import { postfeeding } from "../../../services/feeding/feeding.service";
 import { formatedDate } from "../../../shared/FormatedDate";
-import { hours } from "../../../utils/date";
+import { hours, minutes } from "../../../utils/date";
+import Modal from "../../../shared/Modal";
 
 const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
   const [formData, setFormData] = useState({});
@@ -26,7 +27,6 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
       postfeeding(formData)
         .then((response) => {
           if (response) {
-            console.log(formData);
             setError("");
             setIsVisible(false);
             setReloadData(true);
@@ -39,12 +39,41 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
   };
 
   const handleTouch = (input) => {
+    setBottomSheetVisible(true);
     switch (input) {
       case 'hrs':
-        setRenderComponent(hours.map( v => console.log(v)))
+        setRenderComponent(hours().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setHrs(v * 3600 )
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title style={{textAlign: 'center'}}>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }))
       break;
-      case 'hrs':
-        
+      case 'mins':
+        setRenderComponent(minutes().map( (v, i) => {
+          return (
+            <ListItem
+            key={i}
+            onPress={ () => {
+              setMins(v * 60)
+              setBottomSheetVisible(false)
+            }}
+            >
+            <ListItem.Content>
+              <ListItem.Title>{v}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          )
+        }))
       break;
     }
   }
@@ -59,26 +88,24 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
           <Input 
             style={styles.input} 
             label="Horas"
-            labelStyle={styles.inputA}
-            keyboardType="numeric"
-            onChange={(e) => {
-              let hrsInput = e.nativeEvent.text * 3600
-              setHrs(hrsInput);
-            }} 
-            placeholder="00"
+            labelStyle={styles.input}
+            value={ hrs ? `${hrs / 3600 < 10 ? `0${hrs / 3600}`: hrs / 3600}` : '00' }
+            disabled
           />
         </TouchableOpacity>
-        <Input 
-          style={styles.input} 
-          label="Minutos" 
-          labelStyle={styles.inputB}
-          keyboardType="numeric"
-          onChange={(e) => {
-            let minsInput =  e.nativeEvent.text * 60
-            setMins(minsInput);
-          }} 
-          placeholder="00"
-        /> 
+        <TouchableOpacity
+          style={styles.touchableStyle}
+          onPress={() => handleTouch('mins')}
+        >
+          <Input 
+            style={styles.input} 
+            label="Minutos" 
+            labelStyle={styles.input}
+            placeholder="00"
+            value={ mins ? `${mins / 60 < 10 ? `0${mins / 60}`: mins / 60}` : '00' }
+            disabled
+          />
+        </TouchableOpacity>
       </View>
       <Text style={styles.errorStyle}>{error}</Text>
       <Button
@@ -86,6 +113,13 @@ const FeedingDiaryManual = ({ setReloadData, setIsVisible }) => {
         onPress={submitFeedingManual}
         buttonStyle={styles.buttonStyle}
       />
+      <BottomSheet
+        isVisible={bottomSheetVisible}
+        setIsVisible={setBottomSheetVisible}
+        modalProps={{ onRequestClose: () => { setIsVisible(false)}}}
+      >
+        {renderComponent}
+      </BottomSheet>
     </View>
   );
 };
@@ -108,9 +142,15 @@ const styles = StyleSheet.create({
   secViewInput:{
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "40%",
   },
   container: {
     alignSelf: "center"
+  },
+  touchableStyle: {
+    backgroundColor: getColor("cardColor"),
+    width: "40%",
+  },
+  input: {
+    textAlign: 'center'
   }
 });
